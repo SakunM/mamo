@@ -1,1 +1,1 @@
-A:\PJ\mamo\langs\rust\prjs\isses\target\debug\isses.exe: A:\PJ\mamo\langs\rust\prjs\isses\src\main.rs
+A:\PJ\mamo\langs\rust\prjs\isses\target\debug\isses.exe: A:\PJ\mamo\langs\rust\prjs\isses\src\main.rs A:\PJ\mamo\langs\rust\prjs\isses\src\util\colors.rs A:\PJ\mamo\langs\rust\prjs\isses\src\util\file.rs A:\PJ\mamo\langs\rust\prjs\isses\src\util\strs.rs A:\PJ\mamo\langs\rust\prjs\isses\src\util\tester.rs A:\PJ\mamo\langs\rust\prjs\isses\src\util\utils.rs A:\PJ\mamo\langs\rust\prjs\isses\src\util.rs
