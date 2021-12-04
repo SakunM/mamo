@@ -67,7 +67,7 @@ def develop():
   developer(issue5, result5, "test-5"); developer(issue6, result6, "test-6")
 
 def refactor():
-  issue = "a:/pj/sc/lib/rs/issues/issue1.txt"; result = "a:/pj/sc/lib/rs/issues/result1.txt"
+  issue = "a:/pj/mamo/refs/isses/issue1.txt"; result = "a:/pj/mamo/refs/isses/result1.txt"
   user = ffUser(issue).all(); exp = ffUser(result).all()
   # print(user); print(exp)
   ans = domains(user)
@@ -76,6 +76,6 @@ def refactor():
 # main M001 m001 domain user
 if __name__ == '__main__':
   # test()
-  # refactor()
-  develop()
+  refactor()
+  # develop()
   # product()

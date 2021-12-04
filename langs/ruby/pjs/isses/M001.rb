@@ -48,18 +48,18 @@ def developer(issue,result,name)
   ans = domains((ffUser issue).all()); exp = (ffUser result).all(); zz_act "M001 Test", sNs(ans), exp, name
 end
 def develop() 
-  issue1 = "a:/pj/sc/lib/rs/issues/issue1.txt"; result1 = "a:/pj/sc/lib/rs/issues/result1.txt"
-  issue2 = "a:/pj/sc/lib/rs/issues/issue2.txt"; result2 = "a:/pj/sc/lib/rs/issues/result2.txt"
-  issue3 = "a:/pj/sc/lib/rs/issues/issue3.txt"; result3 = "a:/pj/sc/lib/rs/issues/result3.txt"
-  issue4 = "a:/pj/sc/lib/rs/issues/issue4.txt"; result4 = "a:/pj/sc/lib/rs/issues/result4.txt"
-  issue5 = "a:/pj/sc/lib/rs/issues/issue5.txt"; result5 = "a:/pj/sc/lib/rs/issues/result5.txt"
-  issue6 = "a:/pj/sc/lib/rs/issues/issue6.txt"; result6 = "a:/pj/sc/lib/rs/issues/result6.txt"
+  issue1 = "a:/pj/mamo/refs/isses/issue1.txt"; result1 = "a:/pj/mamo/refs/isses/result1.txt"
+  issue2 = "a:/pj/mamo/refs/isses/issue2.txt"; result2 = "a:/pj/mamo/refs/isses/result2.txt"
+  issue3 = "a:/pj/mamo/refs/isses/issue3.txt"; result3 = "a:/pj/mamo/refs/isses/result3.txt"
+  issue4 = "a:/pj/mamo/refs/isses/issue4.txt"; result4 = "a:/pj/mamo/refs/isses/result4.txt"
+  issue5 = "a:/pj/mamo/refs/isses/issue5.txt"; result5 = "a:/pj/mamo/refs/isses/result5.txt"
+  issue6 = "a:/pj/mamo/refs/isses/issue6.txt"; result6 = "a:/pj/mamo/refs/isses/result6.txt"
   developer(issue1,result1,"test-1"); developer(issue2,result2,"test-2");
   developer(issue3,result3,"test-3"); developer(issue4,result4,"test-4");
   developer(issue5,result5,"test-5"); developer(issue6,result6,"test-6");
 end
 def refactor()
-  issue = "a:/pj/sc/lib/rs/issues/issue1.txt"; result = "a:/pj/sc/lib/rs/issues/result1.txt"
+  issue = "a:/pj/mamo/refs/isses/issue1.txt"; result = "a:/pj/mamo/refs/isses/result1.txt"
   # ans = (ffUser issue).all; exp = (ffUser result).all; p ans; p exp;
   ans = domains ((ffUser issue).all); exp = (ffUser result).all;
   zz_act "M001 Test", sNs(ans), exp, "refactor"
@@ -68,7 +68,7 @@ end
 # main M001 m001 domain user
 if __FILE__ == $0 then
   # test
-  # refactor
-  develop
+  refactor
+  # develop
   # product
 end 
