@@ -1,0 +1,40 @@
+{
+  "inputs": [
+    {
+      "default": "test",
+      "description": "project_name here",
+      "id": "proj_name",
+      "type": "promptString"
+    },
+    {
+      "default": "hoge",
+      "description": "param1:",
+      "id": "param1",
+      "type": "promptString"
+    }
+  ],
+  "tasks": [
+    {
+      "command": "cd a:/pj/mamo/langs/haskell/pjs/${input:proj_name} && stack build",
+      "label": "haskell build",
+      "type": "shell"
+    },
+    {
+      "command": "cd a:/pj/mamo/langs/haskell/pjs/${input:proj_name} && stack install ${input:proj_name}",
+      "label": "haskell install",
+      "type": "shell"
+    },
+    {
+      "command": "echo ${input:param1}",
+      "label": "echo param",
+      "problemMatcher": [],
+      "type": "shell"
+    },
+    {
+      "command": "cd a:/pj/mamo/langs/rust/pjs/books/minigrep && cargo test",
+      "label": "cargo test",
+      "type": "shell"
+    }
+  ],
+  "version": "2.0.0"
+}

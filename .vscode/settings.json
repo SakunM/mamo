@@ -1,0 +1,51 @@
+{
+  "compile-hero": {
+    "notification-toggle": true,
+    "scss-output-directory": "../modern/css",
+    "scss-output-toggle": true,
+    "sass-output-directory": "../modern/css",
+    "sass-output-toggle": true,
+    "pug-output-directory": "../modern",
+    "pug-output-toggle": true,
+    "ignore": ["src/test.js", "*/test.scss", "**/spec/*", "**/src/**/*"],
+    "watch": ["csss/sass/*.sass","csss/scss/*.scss", "tps/pugs/*.pug"]
+  },
+  "[rust]":{
+    "editor.tabSize": 2
+  },
+  "compile-hero.disable-compile-files-on-did-save-code": false,
+  "code-runner.clearPreviousOutput": false,
+  "code-runner.runInTerminal": true,
+  "[bat]": { "files.encoding": "shiftjis"},
+  "editor.wordBasedSuggestions": true,
+  "code-runner.executorMap": {
+    "javascript": "cd $dir && node $fileName",
+    "python":  "cd $dir && python $fileName",
+    "haskell": "cd $dir && runhaskell $fileName",
+    "ocaml" : "cd $dir && ocaml -I a:/PJ/mamo/langs/OCaml/utils/ str.cma $fileName",
+    "groovy" : "cd $dir && groovy -cp a:/PJ/mamo/langs/groovy/classes/ $fileName",
+    "ruby"   : "cd $dir && ruby $fileName",
+    "c"      : "cd $dir && gcc -fexec-charset=cp932 $fileName -o a.exe && ./a.exe && del a.exe",
+    "cpp"    : "cd $dir && g++ -fexec-charset=cp932 $fileName -o a.exe && ./a.exe && del a.exe",
+    "java"   : "cd $dir && javac -Xlint:unchecked -d a:/PJ/mamo/langs/java/classes -encoding UTF-8 $fileName && java -cp a:/PJ/mamo/langs/java/classes $fileNameWithoutExt",
+    "rust" : "cd $dir && cd .. && cargo run"
+  },
+  "code-runner.ignoreSelection": true,
+"files.associations": {
+  "*.hs": "haskell",
+  "*.txt": "plaintext",
+  "*.ml": "ocaml",
+  "*.h": "c",
+  "*.html": "html",
+  "*.py": "python",
+  "*.rs": "rust",
+  "string": "c",
+  "deque": "cpp",
+  "vector": "cpp",
+  "xstring": "cpp"
+},
+"C_Cpp.errorSquiggles": "Disabled",
+"ocaml.sandbox": {
+  "kind": "global"
+}
+}
