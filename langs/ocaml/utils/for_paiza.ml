@@ -1,0 +1,1 @@
+let neg1 ns = List.map(fun n -> n - 1) ns
