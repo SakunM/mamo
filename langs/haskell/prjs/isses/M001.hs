@@ -1,35 +1,44 @@
 import Data.List (transpose,tails,isPrefixOf,permutations)
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe, fromJust)
-import Control.Monad(guard, MonadPlus, mzero, mplus)
+import Control.Monad(guard, MonadPlus, mzero, mplus, when)
+import Control.Monad.ST (ST)
 import Control.Applicative(pure)
 import Numeric(showHex, readInt)
 import Data.Char(digitToInt)
+import Data.Vector (toList, fromList, modify)
+import Data.Vector.Mutable (STVector, unsafeRead, unsafeWrite)
+import qualified Data.Vector.Unboxed.Mutable as MV
+import qualified Data.Vector.Unboxed as V
+import Data.Foldable (for_)
 
 import FromFile(user_f)
 import Tester(zz_act,pad_n)
 import FromString(toI,to_nums,neg1)
 import Util(isin,notin,show_nss)
 
-m001 :: [String] -> String; m001 (s:[]) = s 
-test_t = let res = m001 ["YYNN"] in show res  -- exp is
+m001 :: [String] -> ([String], [Int])
+m001 ss =  (ss, replicate (length ss) 0)
+test_m = let res = m001 ["NNYN","NNYN","NNNN","NYYN"] in show res  -- exp is
 
-replace [] _ _ = []
-replace (c:cs) f v = if c == f then v : replace cs f v else c : replace cs f v
-test_rp = let res = replace (replace "YYNY" 'N' '1') 'Y' '0' in show res
+setter id val ns = f ++ (val : r) where f = take id ns; r = drop (id+1) ns
+test_st = let res = setter 2 10 [0,0,0,0] in show res
 
-domain cs
-  | elem 'Y' cs == False = 16
-  | elem 'N' cs == False  = 1
-  | otherwise  = (foldl(\acc y ->  2 * acc + y) 0 $map(\x -> read [x]) bin) + 1 where
-    bin = replace (replace cs 'N' '1') 'Y' '0'
-test_d = let res = domain "YNYY" in show res
+getSalary ss ns i = if ns!!i == 0 then 
+    let s = ss!!i; total = sum$map(\j -> if (s!!j) == 'N' then 0 else 1) [0.. (length s) -1] in 
+      if total == 0 then sum(setter i 1 ns) else sum(setter i total ns)
+  else ns!!i
 
-domains ss = ["1"]
-test = let res = domains ["NNNN"] in show res
+test_gs = let res = getSalary ["NNYN","NNYN","NNNN","NYYN"] [0,0,0,0] 0 in show res
+
+domain (ss,ns) = sum$map(\i -> getSalary ss ns i)[0..(length ns)-1]
+test_d = let res = domain (["NNYN","NNYN","NNNN","NYYN"],[0,0,0,0]) in show res
+
+domains ss = [show res] where res = domain(m001 ss)
+test = let res = domains ["NNYN","NNYN","NNNN","NYYN"] in show res
 
 user :: IO [String]; user = do 
-  -- line <- getLine; 
+  -- line <- getLine; o
   -- let lim  = (length line) - 2
   -- tbls <- sequence [getLine | _ <- [0..1]]
   line1 <- getLine
