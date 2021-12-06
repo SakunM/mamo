@@ -18,26 +18,22 @@ def test_m(): m001(["N"]); print(salaries)
 
 def getSalary(i, ss):
   if salaries[i] == 0:
-    salary = 0
     s = ss[i]
-    for j in range(0,len(s)):
-      if s[j] == 'Y': salary += getSalary(j,ss)
-    if salary == 0 : salary = 1
+    salary = sum([0 if s[j] == 'N' else getSalary(j,ss) for j in range(0,len(s))])
+    if salary == 0: salary = 1
     salaries[i] = salary
   return salaries[i]
+def test_gs(): arg = ["NNYN","NNYN","NNNN","NYYN"]; m001(arg); res = getSalary(0,arg); print(salaries)
 
 def domain(ss):
-  total = 0
-  for i in range(0,len(ss)):
-    total += getSalary(i, ss)
-  return total
-def test_d(): m001(); res = domain(["NNYN","NNYN","NNNN","NYYN"]); print(res)
+  return  sum([getSalary(i,ss) for i in range(0,len(ss))])
+def test(): arg = ["NNYN","NNYN","NNNN","NYYN"]; m001(arg); res = domain(arg); print(salaries)
 
 def domains(ss): #main
   m001(ss)
   res = domain(ss)
   return [str(res)]
-def test(): ans = domains(["NNYN","NNYN","NNNN","NYYN"]); print(ans)
+def test_ds(): ans = domains(["NNYN","NNYN","NNNN","NYYN"]); print(ans)
 
 def user():
   res = []
@@ -76,6 +72,6 @@ def refactor():
 # main M001 m001 domain user
 if __name__ == '__main__':
   # test()
-  refactor()
-  # develop()
+  # refactor()
+  develop()
   # product()
