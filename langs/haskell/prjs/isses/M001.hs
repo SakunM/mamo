@@ -6,35 +6,24 @@ import Control.Monad.ST (ST)
 import Control.Applicative(pure)
 import Numeric(showHex, readInt)
 import Data.Char(digitToInt)
-import Data.Vector (toList, fromList, modify)
-import Data.Vector.Mutable (STVector, unsafeRead, unsafeWrite)
-import qualified Data.Vector.Unboxed.Mutable as MV
-import qualified Data.Vector.Unboxed as V
-import Data.Foldable (for_)
 
 import FromFile(user_f)
 import Tester(zz_act,pad_n)
 import FromString(toI,to_nums,neg1)
 import Util(isin,notin,show_nss)
 
-m001 :: [String] -> ([String], [Int])
-m001 ss =  (ss, replicate (length ss) 0)
+m001 :: [String] -> [(String,Int)]
+m001 ss =  map(m2)ss where m2 s = if 'Y' `elem` s then (s,0) else (s,1)
 test_m = let res = m001 ["NNYN","NNYN","NNNN","NYYN"] in show res  -- exp is
 
-setter id val ns = f ++ (val : r) where f = take id ns; r = drop (id+1) ns
-test_st = let res = setter 2 10 [0,0,0,0] in show res
+saraly tps i = let (s,v) = tps!!i in if v == 0 then (s,v+sub s) else (s,v) where
+  sub s = sum$map(\j -> if s!!j == 'Y' then snd(saraly tps j) else 0)[0..(length tps) - 1]
+test_sa = let res = saraly [("NNNNNN",1),("YNYNNY",0),("YNNNNY",0),("NNNNNN",1),("YNYNNN",0),("YNNYNN",0)] 1 in show res
 
-getSalary ss ns i = if ns!!i == 0 then 
-    let s = ss!!i; total = sum$map(\j -> if (s!!j) == 'N' then 0 else 1) [0.. (length s) -1] in 
-      if total == 0 then sum(setter i 1 ns) else sum(setter i total ns)
-  else ns!!i
+domain tps = map(dom) [0..(length tps)-1] where dom i = let (s,v) = tps!!i in if v == 0 then (s,v+(snd(saraly tps i))) else (s,v)
+test_d = let res = domain [("NNNNNN",1),("YNYNNY",0),("YNNNNY",0),("NNNNNN",1),("YNYNNN",0),("YNNYNN",0)] in show (sum$map(snd)res)
 
-test_gs = let res = getSalary ["NNYN","NNYN","NNNN","NYYN"] [0,0,0,0] 0 in show res
-
-domain (ss,ns) = sum$map(\i -> getSalary ss ns i)[0..(length ns)-1]
-test_d = let res = domain (["NNYN","NNYN","NNNN","NYYN"],[0,0,0,0]) in show res
-
-domains ss = [show res] where res = domain(m001 ss)
+domains ss = [show ans] where res = domain(m001 ss); ans = sum$map(snd)res
 test = let res = domains ["NNYN","NNYN","NNNN","NYYN"] in show res
 
 user :: IO [String]; user = do 

@@ -9,46 +9,51 @@
 #include "../../utils/from_wrap.c"
 
 static int arg_sz, ans_sz;
+static int *gns; static bool on = false;
 
-void m001(char **ss, int size){ arg_sz = 0; ans_sz = 1;}
-void test_t(){
-  char *arg = fh_line("YYYY"); char **args = fhSs(1); args[0] = arg; m001(args, 1); printf("arg_sz is %d ans_siz is %d", arg_sz, ans_sz);
+void m001(char **ss, int size){
+  arg_sz = size; ans_sz = 1; if(on){ fhIsFree(gns,size);}
+  gns = fh_ints(size); for(int i= 0; i<size; i++){ gns[i] = 0;}
+  on = true;
+}
+void test_m(){
+  char **args = fhSs(2); args[0] = fh_line("N"); args[1] = fh_line("Y"); m001(args, 2); pNs(gns,2);
 }  // exp is exp
 
-int domain(char *cs){
-  if (strchr(cs, 'Y') == NULL) { return 16;}
-  if (strchr(cs, 'N') == NULL) { return 1;}
-  char res[strlen(cs) + 1]; res[strlen(cs)] = '\0';
-  for(int i= 0; i<(strlen(cs)); i++){
-    if(cs[i] == 'Y') { res[i] = '0'; continue;}
-    if(cs[i] == 'N') { res[i] = '1'; continue;}
-    res[i] = cs[i];
+int getSaraly(int i, char **ss){
+  if(gns[i] == 0){
+    int saraly = 0;
+    char *s = ss[i];
+    for(int j= 0; j<arg_sz; j++){ if(s[j] == 'Y'){ saraly += getSaraly(j,ss);}}
+    if(saraly == 0){ saraly = 1;}
+    gns[i] = saraly;
+    return gns[i];
   }
-  int ans = 0;
-  for(int i= 0; i<strlen(res); i++){
-    ans = ans * 2 + (to_i(res[i]));
-  }
+  return gns[i];
+}
 
-  return ans + 1;
+int domain(char **ss){
+  int total = 0;
+  for(int i= 0; i<arg_sz; i++){ total += getSaraly(i,ss);}
+  return total;
 }
 void test_d(){
-  char *arg = {"YNYY"};
-  int res = domain(arg);
-  printf("ans is %d",res);
+  char **args = fhSs(4); args[0] = fh_line("NNYN"); args[1] = fh_line("NNYN"); args[2] = fh_line("NNNN"); args[3] = fh_line("NYYN");
+  m001(args,4);
+  int res = domain(args);
+  pi(res);
 }
 // main
 char **domains(char **arg, int sz){
-  // m001(arg,sz);
-  // int res = domain(arg[arg_sz]);
-  ans_sz = 1;
+  m001(arg,sz);
+  int res = domain(arg);
   char **ans = fhSs(ans_sz);
-  // ans[0] = sI(res);
-  ans[0] = fh_line("1");
+  ans[0] = sI(res);
   return ans;
 }
-void test(){
-  char *arg = fh_line("NNNN"); char **args = fhSs(1); args[0] = arg;
-  char **res = domains(args,1); pSs(res,ans_sz);
+void test_ds(){
+  char ** args = fhSs(4); args[0] = fh_line("NNYN"); args[1] = fh_line("NNYN"); args[2] = fh_line("NNNN"); args[3] = fh_line("NYYN");
+  char **res = domains(args,4); pSs(res,ans_sz);
 }  // exp is exp
 
 UserFF user() {
@@ -93,8 +98,8 @@ void refactor() {
 
 // M001 m001 domain user
 int main(void){
-  // test();
+  test();
   // refactor();
-  develop();
+  // develop();
   // product();
 }
