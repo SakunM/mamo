@@ -20,7 +20,7 @@ saraly tps i = let (s,v) = tps!!i in if v == 0 then (s,v+sub s) else (s,v) where
   sub s = sum$map(\j -> if s!!j == 'Y' then snd(saraly tps j) else 0)[0..(length tps) - 1]
 test_sa = let res = saraly [("NNNNNN",1),("YNYNNY",0),("YNNNNY",0),("NNNNNN",1),("YNYNNN",0),("YNNYNN",0)] 1 in show res
 
-domain tps = map(dom) [0..(length tps)-1] where dom i = let (s,v) = tps!!i in if v == 0 then (s,v+(snd(saraly tps i))) else (s,v)
+domain tps = map(dom) [0..(length tps)-1] where dom i = let (s,v) = tps!!i in if v == 0 then saraly tps i else (s,v)
 test_d = let res = domain [("NNNNNN",1),("YNYNNY",0),("YNNNNY",0),("NNNNNN",1),("YNYNNN",0),("YNNYNN",0)] in show (sum$map(snd)res)
 
 domains ss = [show ans] where res = domain(m001 ss); ans = sum$map(snd)res
