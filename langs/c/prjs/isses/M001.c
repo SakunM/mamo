@@ -9,22 +9,17 @@
 #include "../../utils/from_wrap.c"
 
 static int arg_sz, ans_sz;
-static int *gns; static bool on = false;
 
-void m001(char **ss, int size){
-  arg_sz = size; ans_sz = 1; if(on){ fhIsFree(gns,size);}
-  gns = fh_ints(size); for(int i= 0; i<size; i++){ gns[i] = 0;}
-  on = true;
-}
+void m001(char **ss, int size){ arg_sz = size; ans_sz = 1;}
 void test_m(){
-  char **args = fhSs(2); args[0] = fh_line("N"); args[1] = fh_line("Y"); m001(args, 2); pNs(gns,2);
+  char **args = fhSs(2); args[0] = fh_line("N"); args[1] = fh_line("Y"); m001(args, 2); printf("arg_sz is %d",arg_sz);
 }  // exp is exp
 
-int getSaraly(int i, char **ss){
+int getSaraly(int i, char **ss, int *gns){
   if(gns[i] == 0){
     int saraly = 0;
     char *s = ss[i];
-    for(int j= 0; j<arg_sz; j++){ if(s[j] == 'Y'){ saraly += getSaraly(j,ss);}}
+    for(int j= 0; j<arg_sz; j++){ if(s[j] == 'Y'){ saraly += getSaraly(j,ss,gns);}}
     if(saraly == 0){ saraly = 1;}
     gns[i] = saraly;
     return gns[i];
@@ -33,8 +28,8 @@ int getSaraly(int i, char **ss){
 }
 
 int domain(char **ss){
-  int total = 0;
-  for(int i= 0; i<arg_sz; i++){ total += getSaraly(i,ss);}
+  int total = 0; int gns[arg_sz]; for(int i= 0; i<arg_sz; i++){ gns[i] = 0;}
+  for(int i= 0; i<arg_sz; i++){ total += getSaraly(i,ss,gns);}
   return total;
 }
 void test_d(){
@@ -51,7 +46,7 @@ char **domains(char **arg, int sz){
   ans[0] = sI(res);
   return ans;
 }
-void test_ds(){
+void test(){
   char ** args = fhSs(4); args[0] = fh_line("NNYN"); args[1] = fh_line("NNYN"); args[2] = fh_line("NNNN"); args[3] = fh_line("NYYN");
   char **res = domains(args,4); pSs(res,ans_sz);
 }  // exp is exp
@@ -74,15 +69,15 @@ void product() {
 void developer(char *issue, char *result, char *name){
   UserFF arg = ff_list(issue), exp = ff_list(result); char **ans = domains(arg.lines,arg.size);
   zz_act("M001 Test", sSs(ans,ans_sz), sSs(exp.lines,ans_sz), name);
-  fhSsFree(exp.lines,exp.size); fhSsFree(ans,ans_sz);
+  fhSsFree(exp.lines,exp.size); fhSsFree(ans,ans_sz); fhSsFree(arg.lines,arg.size);
 }
 void develop() {
-  char *issue1 = "a:/pj/mamo/resf/isses/issue1.txt", *result1 = "a:/pj/mamo/refs/isses/result1.txt",
-       *issue2 = "a:/pj/mamo/resf/isses/issue2.txt", *result2 = "a:/pj/mamo/refs/isses/result2.txt",
-       *issue3 = "a:/pj/mamo/resf/isses/issue3.txt", *result3 = "a:/pj/mamo/refs/isses/result3.txt",
-       *issue4 = "a:/pj/mamo/resf/isses/issue4.txt", *result4 = "a:/pj/mamo/refs/isses/result4.txt",
-       *issue5 = "a:/pj/mamo/resf/isses/issue5.txt", *result5 = "a:/pj/mamo/refs/isses/result5.txt",
-       *issue6 = "a:/pj/mamo/resf/isses/issue6.txt", *result6 = "a:/pj/mamo/refs/isses/result6.txt";
+  char *issue1 = "a:/pj/mamo/refs/isses/issue1.txt", *result1 = "a:/pj/mamo/refs/isses/result1.txt",
+       *issue2 = "a:/pj/mamo/refs/isses/issue2.txt", *result2 = "a:/pj/mamo/refs/isses/result2.txt",
+       *issue3 = "a:/pj/mamo/refs/isses/issue3.txt", *result3 = "a:/pj/mamo/refs/isses/result3.txt",
+       *issue4 = "a:/pj/mamo/refs/isses/issue4.txt", *result4 = "a:/pj/mamo/refs/isses/result4.txt",
+       *issue5 = "a:/pj/mamo/refs/isses/issue5.txt", *result5 = "a:/pj/mamo/refs/isses/result5.txt",
+       *issue6 = "a:/pj/mamo/refs/isses/issue6.txt", *result6 = "a:/pj/mamo/refs/isses/result6.txt";
   developer(issue1, result1,"test-1"); developer(issue2, result2,"test-2");
   developer(issue3, result3,"test-3"); developer(issue4, result4,"test-4");
   developer(issue5, result5,"test-5"); developer(issue6, result6,"test-6");
@@ -98,8 +93,8 @@ void refactor() {
 
 // M001 m001 domain user
 int main(void){
-  test();
+  // test();
   // refactor();
-  // develop();
+  develop();
   // product();
 }
