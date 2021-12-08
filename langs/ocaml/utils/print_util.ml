@@ -20,6 +20,3 @@ let pSs ss = printf "%s\n" (sSs ss)
 let pNs ns = printf "%s\n" (sNs ns)
 let pSss sss = printf "%s\n" (sSss sss)
 let pNss nss = printf "%s\n" (sNss nss)
-
-(* 色々なタプルの表示*)
-let pT2 f1 f2 (t1,t2) = printf "(%s, %s)" (f1 t1) (f2 t2) (* ペアタプル専用*)

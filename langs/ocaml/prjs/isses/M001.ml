@@ -12,20 +12,28 @@ open String
 #use "../../utils/util.ml"
 
 module L = List
+module S = String
 
-let m001 = function s::[] -> s | _ -> failwith "err"
-let test_t() = let res = m001 ["YYYY"]in ps res
+let sT2 (s,v) =  "(" ^ s ^ "," ^ sI(v) ^ ")" 
+let test_st2() = let res = sT2 ("NNNN",1) in ps res
+let sT2s tps = L.map(sT2)tps
+let pTps tps = let s = "[" ^ sJoin ";" (sT2s tps) ^ "]" in ps s
+let test_pt() = pTps [("NNYN",0);("NNYN",0);("NNNN",1);("NYYN",0)]
 
-let replace cs f v = Str.global_replace (Str.regexp_string f) v cs
-let test_rp() = let res = replace (replace "YNYN" "Y" "0") "N" "1" in ps res
+let m001 ss = L.map(fun s -> if S.contains s 'Y' then (s,0) else (s,1))ss
+let test_m() = let res = m001 ["NNYN";"NNYN";"NNNN";"NYYN"] in pTps res
+let snd (s,v) = v
+let rec saraly tps i = let sub s = sums(L.map(fun j -> if (S.get s j) = 'Y' then snd(saraly tps j) else 0)(nums0to((L.length tps) -1))) in
+  let (s,v) = L.nth tps i in if v = 0 then (s, v + (sub s)) else (s,v)
+let test_sl() = let res = saraly [("NNNNNN",1);("YNYNNY",0);("YNNNNY",0);("NNNNNN",1);("YNYNNN",0);("YNNYNN",0)] 1 in ps(sT2 res)  (* exp is exp *)
 
-let domain cs = if String.contains cs 'Y'= false then 16 else if String.contains cs 'N' = false then 1 else
-  let res = replace(replace cs "Y" "0") "N" "1" in (int_of_string ("0b" ^ res) + 1)
-let test_d() = let res = domain "YNYY" in pi res
+let domain tps = let dom i tps = let (s,v) = L.nth tps i in if v = 0 then saraly tps i else (s,v)
+  in L.map(fun i -> dom i tps)(nums0to ((L.length tps)-1))
+let test_d() = let res = domain [("NNNNNN",1);("YNYNNY",0);("YNNNNY",0);("NNNNNN",1);("YNYNNN",0);("YNNYNN",0)]  in pTps res
 
 (* main *)
-let domains ss = ["1"]
-let test() = let res = domains ["NNNN"] in pSs res (* exp is exp *)
+let domains ss = let res = domain(m001 ss) in let ans = sums(L.map(snd)res) in [sI ans]
+let test() = let res = domains ["NNYN";"NNYN";"NNNN";"NYYN"] in pSs res (* exp is exp *)
 
 let user() = let line = read_line() in let lim = (length line) - 1 in let lines = L.map(fun _ -> read_line())(replicate lim 0) in line ::lines
 
