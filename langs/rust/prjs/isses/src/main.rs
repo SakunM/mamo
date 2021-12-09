@@ -19,38 +19,40 @@ use util::utils::sums;
 
 fn to_usize(arg:Vec<i32>) -> Vec<usize>{ arg.iter().map(|ar| *ar as usize).collect()}
 
-fn m001(ss: Vec<&str>) -> String{
-    ss[0].to_string()
-}   
-fn test_t(){
-    let arg = vec!["YYYY"]; 
-    let args = m001(arg); println!("args: {}",args);
+fn m001(ss: Vec<&str>) -> Vec<i32>{ ss.iter().map(|_| 0).collect()}   
+fn test_m(){
+    let arg = vec!["NNYN","NNYN","NNNN","NYYN"]; let mut args = m001(arg); println!("args: {:?}",args);
 }
 
-fn domain(cs: String) -> i32{
-    if cs.contains('Y') == false { return 16;}
-    if cs.contains('N') == false { return 1;}
-    let s = cs.replace("Y","0").replace("N","1");
-    let mut res = 0;
-    for c in s.as_str().chars(){
-        let n:i32 = c.to_string().parse().unwrap();
-        res = res * 2 + n;
+fn get_saraly(i:usize, ss:&Vec<&str>, ns:&mut Vec<i32>) -> i32 {
+    if ns[i] == 0 {
+        let mut saraly = 0; let s = ss[i];
+        for(idx,j) in s.chars().enumerate(){ if j == 'Y' { saraly += get_saraly(idx,ss,ns);}}
+        if saraly == 0 { saraly = 1;}
+        ns[i] = saraly;
+        return ns[i];
     }
-    res+1
+    ns[i]
+}
+fn domain(ss:Vec<&str>, ns: &mut Vec<i32>) -> i32{
+    let mut total = 0;
+    for i in 0..ss.len() { total += get_saraly(i,&ss, ns);}
+    total
 }
 fn test(){
-    let res = domain(String::from("YNYY"));
+    let mut ns = vec![0,0,0,0,0,0];
+    let res = domain(vec!["NNNNNN","YNYNNY","YNNNNY","NNNNNN","YNYNNN","YNNYNN"], &mut ns);
     println!("{}",res);
 }
 
 fn domains(ss: Vec<String>)-> Vec<String>{  // main
-    // let args = m001(from_strings(&ss));
-    // let res = domain(args);
-    // vec![res.to_string()]
-    vec!["1".to_string()]
+    let mut args = m001(from_strings(&ss));
+    let res = domain(from_strings(&ss), &mut args);
+    vec![res.to_string()]
+    // vec!["1".to_string()]
 }
 fn test_ds(){
-    let arg = vec!["YYYY"];
+    let arg = vec!["N"];
     let ans = domains(from_strs(arg)); println!("{:?}",ans);
 }
 
