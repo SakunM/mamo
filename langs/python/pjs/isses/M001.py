@@ -9,31 +9,31 @@ from from_file import ffUser
 from to_string import sSs, sNs, unwords
 from from_string import to_i, to_is, to_nums
 
-salaries = []
-def m001(ss):
-  global salaries
-  salaries = []; l = len(ss)
-  for _ in range(0,l): salaries.append(0)
-def test_m(): m001(["N"]); print(salaries)
+def m001(ss): return to_nums(ss[0])
+def test_m(): ns = m001(["10 3 2 5 7 8"]); print(ns)
 
-def getSalary(i, ss):
-  if salaries[i] == 0:
-    s = ss[i]
-    salary = sum([0 if s[j] == 'N' else getSalary(j,ss) for j in range(0,len(s))])
-    if salary == 0: salary = 1
-    salaries[i] = salary
-  return salaries[i]
-def test_gs(): arg = ["NNYN","NNYN","NNNN","NYYN"]; m001(arg); res = getSalary(0,arg); print(salaries)
-
-def domain(ss):
-  return  sum([getSalary(i,ss) for i in range(0,len(ss))])
-def test(): arg = ["NNYN","NNYN","NNNN","NYYN"]; m001(arg); res = domain(arg); print(salaries)
+def max2(a,b): return  a if a > b else b
+def domain(ns):
+  N = len(ns); dp = []; ans = 0
+  for i in range(0,N-1):
+    dp.append(ns[i])
+    if i > 0 : dp[i] = max2(dp[i], dp[i-1])
+    if i > 1 : dp[i] = max2(dp[i], dp[i-2] + ns[i])
+    ans = max2(ans, dp[i])
+  print(dp)
+  for i in range(0,N-1):
+    dp[i] = ns[i+1]
+    if i > 0: dp[i] = max2(dp[i], dp[i-1])
+    if i > 1: dp[i] = max2(dp[i], dp[i-2] + ns[i+1])
+    ans = max2(ans, dp[i])
+  print(dp)
+  return ans
+def test(): res = domain([10,3,2,5,7,8]); print(res)
 
 def domains(ss): #main
-  m001(ss)
-  res = domain(ss)
+  res = domain(m001(ss))
   return [str(res)]
-def test_ds(): ans = domains(["NNYN","NNYN","NNNN","NYYN"]); print(ans)
+def test_ds(): ans = domains(["1 2 3 4 5 1 2 3 4 5"]); print(ans)
 
 def user():
   res = []
@@ -71,7 +71,7 @@ def refactor():
 
 # main M001 m001 domain user
 if __name__ == '__main__':
-  # test()
+  test()
   # refactor()
-  develop()
+  # develop()
   # product()
