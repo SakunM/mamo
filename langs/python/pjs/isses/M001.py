@@ -12,23 +12,20 @@ from from_string import to_i, to_is, to_nums
 def m001(ss): return to_nums(ss[0])
 def test_m(): ns = m001(["10 3 2 5 7 8"]); print(ns)
 
-def max2(a,b): return  a if a > b else b
 def domain(ns):
   N = len(ns); dp = []; ans = 0
   for i in range(0,N-1):
     dp.append(ns[i])
-    if i > 0 : dp[i] = max2(dp[i], dp[i-1])
-    if i > 1 : dp[i] = max2(dp[i], dp[i-2] + ns[i])
-    ans = max2(ans, dp[i])
-  print(dp)
+    if i > 0 : dp[i] = max(dp[i], dp[i-1])
+    if i > 1 : dp[i] = max(dp[i], dp[i-2] + ns[i])
+    ans = max(ans, dp[i])
   for i in range(0,N-1):
     dp[i] = ns[i+1]
-    if i > 0: dp[i] = max2(dp[i], dp[i-1])
-    if i > 1: dp[i] = max2(dp[i], dp[i-2] + ns[i+1])
-    ans = max2(ans, dp[i])
-  print(dp)
+    if i > 0: dp[i] = max(dp[i], dp[i-1])
+    if i > 1: dp[i] = max(dp[i], dp[i-2] + ns[i+1])
+    ans = max(ans, dp[i])
   return ans
-def test(): res = domain([10,3,2,5,7,8]); print(res)
+def test(): res = domain([1,2,3,100,4]); print(res)
 
 def domains(ss): #main
   res = domain(m001(ss))
@@ -71,7 +68,7 @@ def refactor():
 
 # main M001 m001 domain user
 if __name__ == '__main__':
-  test()
+  # test()
   # refactor()
-  # develop()
+  develop()
   # product()
