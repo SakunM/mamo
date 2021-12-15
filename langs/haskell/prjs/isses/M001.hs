@@ -12,19 +12,31 @@ import Tester(zz_act,pad_n)
 import FromString(toI,to_nums,neg1)
 import Util(isin,notin,show_nss)
 
-m001 :: [String] -> [(String,Int)]
-m001 ss =  map(m2)ss where m2 s = if 'Y' `elem` s then (s,0) else (s,1)
-test_m = let res = m001 ["NNYN","NNYN","NNNN","NYYN"] in show res  -- exp is
+m001 :: [String] -> [Int]
+m001 (s:_) =  to_nums s
+test_m = let res = m001 ["10 3 2 5 7 8"] in show res  -- exp is
 
-saraly tps i = let (s,v) = tps!!i in if v == 0 then (s,v+sub s) else (s,v) where
-  sub s = sum$map(\j -> if s!!j == 'Y' then snd(saraly tps j) else 0)[0..(length tps) - 1]
-test_sa = let res = saraly [("NNNNNN",1),("YNYNNY",0),("YNNNNY",0),("NNNNNN",1),("YNYNNN",0),("YNNYNN",0)] 1 in show res
+setter :: a -> Int -> [a] -> [a]
+setter v i xs = f ++ (v:r) where f = take i xs; r = drop (i+1) xs
+test_s = let res = setter 10 0 [0,0,0,0,0] in show res
 
-domain tps = map(dom) [0..(length tps)-1] where dom i = let (s,v) = tps!!i in if v == 0 then saraly tps i else (s,v)
-test_d = let res = domain [("NNNNNN",1),("YNYNNY",0),("YNNNNY",0),("NNNNNN",1),("YNYNNN",0),("YNNYNN",0)] in show (sum$map(snd)res)
+domain :: (Num a, Ord a) => [a] -> [a] -> a
+domain ns dp = max (maximum (foldl(folder1) dp [0..(length dp)-1])) (maximum (foldl(folder2) dp [0..(length dp)-1])) where
+  folder1 ac i = let ac1 = setter (ns!!i) i ac in if i > 0 
+    then let m = max (ac1!!i) (ac1!!(i-1)) in let ac2 = setter m i ac1 in if i > 1
+      then let m2 = max (ac2!!i) (ac2!!(i-2) + ns!!i) in setter m2 i ac2
+      else ac2
+    else ac1
+  folder2 ac i = let ac1 = setter (ns!!(i+1)) i  ac in if i > 0
+    then let m = max (ac1!!i) (ac1!!(i-1)) in let ac2 = setter m i ac1 in if i > 1
+      then let m2 = max (ac2!!i) (ac2!!(i-2) + ns!!(i+1)) in setter m2 i ac2
+      else ac2
+    else ac1
+test = let res = domain [10,3,2,5,7,8] [0,0,0,0,0] in show res
 
-domains ss = [show ans] where res = domain(m001 ss); ans = sum$map(snd)res
-test = let res = domains ["NNYN","NNYN","NNNN","NYYN"] in show res
+domains :: [String] -> [String]
+domains ss = let ns = m001 ss; dp = replicate (length ns - 1) 0 in [show $domain ns dp]
+test_ds = let res = domains ["10 3 2 5 7 8"] in show res
 
 user :: IO [String]; user = do 
   -- line <- getLine; o

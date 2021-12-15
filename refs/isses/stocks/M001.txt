@@ -19,22 +19,8 @@ Rustで実装
 問題を読み解く
 先頭と末尾がつながった数値のリストから、あるルールに則した選別を行い集積した結果から最大の値を得る事が問題の答えだ。
 ルールは、選別に加えた、数値の次の数値は選別出来ない事だ。つまり先頭を選別すれば末尾が、末尾を選別すれば先頭が選別できない。
-なので、添え字で０から始めるループと１から始めるループが必要で、それぞれのループの最大値を比べる事で全体の答えとする。
-まず０から始めるループに対して選別ルールが適用されているか調べる必要があるだろう。
-def dom(ns): 
-  N = len(ns); dp = []; ans = 0
-  for i in range(0,N-1):
-    dp.append(ns[i])
-    if i > 0 : dp[i] = max(dp[i], dp[i-1]) 			#最初のIFは2回目以降に適用
-    if i > 1 : dp[i] = max(dp[i], dp[i-2] + ns[i])	#次のIFは3回目以降に適用
-    ans = max(ans, dp[i])	#このようなロジックなので、nsからどの要素を加算したのかは分からない。なので引数を工夫して調べる。
-  print(dp)	# [1,100,100,104,105,110]	ansには最後の値が代入される
-  return  ans
-def test():
-	res = dom([1,100,3,4,5,6,7]); print(res)　#110　この場合最初の要素１は１００が現れた時点で加算対象から外れる
-	res = dom([1,2,100,4,5,6,7]); print(res)　#107　この場合次の要素２は１００が現れた時点で加算対象から外れるが１は加味される
-	dpの内容は[1,2,101,101,106,107]となり、答えの107に内訳をnsの要素で表すと[1,100,6]でインデックスだと[0,2,5]となる。
-	インデックスの２の次に５が採用されているのが、最大の肝で問題の仕様を満たしている。
+なので、添え字０から始めるループと１から始めるループが必要で、それぞれのループの中の選別ルールは変わらない。
+確定した累積値と二つの候補値をキャシュする配列と、最大値が更新される度に自らを書き換える蓄積変数の二つで解決する。
 
 問題と答え
 isse1
@@ -73,39 +59,190 @@ res6
 
 
 Pythonで実装
+Pythonのmaxは関数なので、引数のタイプによって挙動を変化させる事が出来る。
 
-def m001(ss): return to_nums(ss[0])  # 冠関数（ファイル名と同名の関数）では、
-	# 単純に空白区切りの数値変換可能な文字列を数値のリストへ変換。
+def m001(ss): return to_nums(ss[0])
 def test_m(): ns = m001(["10 3 2 5 7 8"]); print(ns)
 
-def max2(a,b): return  a if a > b else b  # Pythonでは、maxはリストの最大値を返す。なので単純なmaxはmax2として自作
 def domain(ns):
   N = len(ns); dp = []; ans = 0
-  for i in range(0,N-1):
+  for i in range(0,N-1):　０から始めるループ
     dp.append(ns[i])
-    if i > 0 : dp[i] = max2(dp[i], dp[i-1])
-    if i > 1 : dp[i] = max2(dp[i], dp[i-2] + ns[i])
-    ans = max2(ans, dp[i])
-  for i in range(0,N-1):
+    if i > 0 : dp[i] = max(dp[i], dp[i-1])
+    if i > 1 : dp[i] = max(dp[i], dp[i-2] + ns[i])
+    ans = max(ans, dp[i])
+  for i in range(0,N-1):　１から始めるループ
     dp[i] = ns[i+1]
-    if i > 0: dp[i] = max2(dp[i], dp[i-1])
-    if i > 1: dp[i] = max2(dp[i], dp[i-2] + ns[i+1])
-    ans = max2(ans, dp[i])
+    if i > 0: dp[i] = max(dp[i], dp[i-1])
+    if i > 1: dp[i] = max(dp[i], dp[i-2] + ns[i+1])
+    ans = max(ans, dp[i])
   return ans
-def test_d(): res = domain([10,3,2,5,7,8]); print(res)
+def test(): res = domain([1,2,3,100,4]); print(res)
 
 def domains(ss): #main
   res = domain(m001(ss))
   return [str(res)]
-def test(): ans = domains(["1 2 3 4 5 1 2 3 4 5"]); print(ans)
+def test_ds(): ans = domains(["1 2 3 4 5 1 2 3 4 5"]); print(ans)
 
 
 Rubyで実装
+RubyでのmaxはEnumerableのmaxメソッドを使う。つまりいったん候補をリストに詰め直す必要がある。
+
+def m001(ss) to_nums ss[0] end
+def test_m() res = m001 ["10 3 2 5 7 8"]; p(res) end   #exp is exp
+
+def domain(ns)
+  n = ns.size; ans = 0; bp = [];
+  for i in 0..n-2 do
+    bp << ns[i]
+    if i > 0 then bp[i] = [bp[i],bp[i-1]].max end
+    if i > 1 then bp[i] = [bp[i], bp[i-2] + ns[i]].max end
+    ans = [ans, bp[i]].max
+  end
+  for i in 0..n-2 do
+    bp[i] = ns[i+1]
+    if i > 0 then bp[i] = [bp[i],bp[i-1]].max end
+    if i > 1 then bp[i] = [bp[i],bp[i-2] + ns[i+1]].max end
+    ans = [ans,bp[i]].max
+  end
+  ans
+end
+def test_d() res = domain [10,3,2,5,7,8]; p res end   #exp is exp
+
+def domains(ss) # main
+  arg = m001(ss)
+  res = domain(arg)
+  [res.to_s]
+end
+def test()  res = domains ["1 2 3 4 5 1 2 3 4 5"]; p res end
+
 JavaScriptで実装
+
+function m001(ss){ return fs.to_nums(ss[0]);}
+function test_m(){ let res = m001(["10 3 2 5 7 8"]); console.log(res);}
+
+function domain(ns){
+  let ans = 0, dp = [];
+  for(let i= 0; i<ns.length-1; i++){
+    dp.push(ns[i]);
+    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
+    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i]);}
+    ans = Math.max(ans, dp[i]);
+  }
+  for(let i= 0; i<ns.length-1; i++){
+    dp[i] = ns[i+1];
+    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
+    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i+1]);}
+    ans = Math.max(ans, dp[i]);
+  }
+  return ans;
+}
+function test(){
+  let res = domain([10,3,2,5,7,8]); console.log(res);
+}  // exp is exp
+// main
+function domains(args){
+  let res = domain(m001(args));
+  return [res.toString()];
+}
+function test_ds(){ let ans = domains(["10 3 2 5 7 8"]); console.log(ans);}  // exp is 
+
 Groovyで実装
+
+def m001(ss){ return to_nums(ss[0]);}
+def test_m(){ def res = m001(["10 3 2 5 7 8"]); println(res);}   // exp is
+
+def domain(ns){
+  def ans = 0, dp = [];
+  for(int i= 0; i<ns.size()-1; i++){
+    dp << ns[i]; 
+    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
+    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i]);}
+    ans = Math.max(dp[i], ans);
+  }
+  for(int i= 0; i<ns.size()-1; i++){
+    dp[i] = ns[i+1];
+    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
+    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i+1]);}
+    ans = Math.max(dp[i], ans);
+  }
+  return ans;
+}
+def test_d(){ def res = domain([10,3,2,5,7,8]); println(res);}   // exp is
+
+def domains(ss){ // main
+  def res = domain(m001(ss));
+  return [res.toString()];
+}
+def test(){ def res = domains(["10 3 2 5 7 8"]); println(res);}
+
+
 Javaで実装
+
+private void m001() { this.ns = fs.toNums(lines.get(0));}
+  public void test_m(){ m001(); System.out.println(this.ns);} // exp is 
+
+  private int domain(List<Integer> ns) {
+    int ans = 0; List<Integer> dp = new ArrayList<>();
+    for(int i= 0; i<ns.size() - 1; i++){
+      dp.add(ns.get(i));
+      if( i > 0){ dp.set(i, Math.max(dp.get(i), dp.get(i-1)));}
+      if( i > 1){ dp.set(i, Math.max(dp.get(i), dp.get(i-2)+ ns.get(i)));}
+      ans = Math.max(dp.get(i), ans);
+    }
+    for(int i= 0; i<ns.size() - 1; i++){
+      dp.set(i, ns.get(i+1));
+      if( i > 0){ dp.set(i, Math.max(dp.get(i), dp.get(i-1)));}
+      if( i > 1){ dp.set(i, Math.max(dp.get(i), dp.get(i-2)+ ns.get(i+1)));}
+      ans = Math.max(dp.get(i), ans);
+    }
+    return ans;
+  }
+  public void test_d(){
+    List<Integer> arg = asList(10,3,2,5,7,8);
+    int res = domain(arg); System.out.println(res);
+  }  // exp is exp
+
+  public List<String> domains(){
+    m001(); int res = domain(this.ns);
+    return asList(String.valueOf(res));
+  }// main
+  public void test(){ List<String> res = domains(); System.out.println(res);}
+
+
 Haskellで実装
+蓄積変数や繰り返しがふんだんに使われる手続き型のロジックを関数型に移植する作業はいつも骨が折れる。
+今回は、二つのfoldlを使ってその中からの最大値を検出する事で何とか移植できた。けど、関数型らしい実装では無い気がする。
+m001 :: [String] -> [Int]
+m001 (s:_) =  to_nums s
+test_m = let res = m001 ["10 3 2 5 7 8"] in show res  -- exp is
+
+setter :: a -> Int -> [a] -> [a]
+setter v i xs = f ++ (v:r) where f = take i xs; r = drop (i+1) xs
+test_s = let res = setter 10 0 [0,0,0,0,0] in show res
+
+domain :: (Num a, Ord a) => [a] -> [a] -> a
+domain ns dp = max (maximum (foldl(folder1) dp [0..(length dp)-1])) (maximum (foldl(folder2) dp [0..(length dp)-1])) where
+  folder1 ac i = let ac1 = setter (ns!!i) i ac in if i > 0 
+    then let m = max (ac1!!i) (ac1!!(i-1)) in let ac2 = setter m i ac1 in if i > 1
+      then let m2 = max (ac2!!i) (ac2!!(i-2) + ns!!i) in setter m2 i ac2
+      else ac2
+    else ac1
+  folder2 ac i = let ac1 = setter (ns!!(i+1)) i  ac in if i > 0
+    then let m = max (ac1!!i) (ac1!!(i-1)) in let ac2 = setter m i ac1 in if i > 1
+      then let m2 = max (ac2!!i) (ac2!!(i-2) + ns!!(i+1)) in setter m2 i ac2
+      else ac2
+    else ac1
+test = let res = domain [10,3,2,5,7,8] [0,0,0,0,0] in show res
+
+domains :: [String] -> [String]
+domains ss = let ns = m001 ss; dp = replicate (length ns - 1) 0 in [show $domain ns dp]
+test_ds = let res = domains ["10 3 2 5 7 8"] in show res
+
 OCamlで実装
+基本的な戦略はHaskellで出来ているので、OCamlの流儀に合わせるだけだ。
+
+
 C++で実装
 Cで実装
 Rustで実装
