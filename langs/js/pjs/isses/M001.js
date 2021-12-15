@@ -3,39 +3,34 @@ const user_path = '../../utils/from_file', t = require('../../utils/tester')("M0
       ts = require('../../utils/to_string'), tw = require('../../utils/to_wrap'), fs = require('../../utils/from_string'),
       ut = require('../../utils/util');
 
-let salaries;
+function m001(ss){ return fs.to_nums(ss[0]);}
+function test_m(){ let res = m001(["10 3 2 5 7 8"]); console.log(res);}
 
-function m001(ss){ let l = ss.length; salaries = tw.replicate(l,0);}
-function test_m(){ m001(["N","Y"]); console.log(salaries);}
-
-function getSaraly(i, ss) {
-  if(salaries[i] == 0) {
-    let salary = 0, s = ss[i];
-    for(let j= 0; j<s.length; j++){ if(s[j] == 'Y'){ salary += getSaraly(j,ss);}}
-    if(salary == 0){ salary = 1;}
-    salaries[i] = salary;
+function domain(ns){
+  let ans = 0, dp = [];
+  for(let i= 0; i<ns.length-1; i++){
+    dp.push(ns[i]);
+    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
+    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i]);}
+    ans = Math.max(ans, dp[i]);
   }
-  return salaries[i];
-}
-
-function domain(ss){
-  let total = 0;
-  for(let i= 0; i<ss.length; i++){
-    total += getSaraly(i,ss);
+  for(let i= 0; i<ns.length-1; i++){
+    dp[i] = ns[i+1];
+    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
+    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i+1]);}
+    ans = Math.max(ans, dp[i]);
   }
-  return total;
+  return ans;
 }
 function test(){
-  let args = ["NNYN","NNYN","NNNN","NYYN"]; m001(args);
-  let res = domain(args); console.log(res);
+  let res = domain([10,3,2,5,7,8]); console.log(res);
 }  // exp is exp
 // main
 function domains(args){
-  m001(args);
-  let res = domain(args);
+  let res = domain(m001(args));
   return [res.toString()];
 }
-function test_ds(){ let ans = domains(["NNYN","NNYN","NNNN","NYYN"]); console.log(ans);}  // exp is 
+function test_ds(){ let ans = domains(["10 3 2 5 7 8"]); console.log(ans);}  // exp is 
 
 // user
 class User{
@@ -83,7 +78,7 @@ function refactor(){
 // M001 m001 domain user
 if(require.main === module){
   // test();
-  refactor();
-  // develop();
+  // refactor();
+  develop();
   // product();
 }

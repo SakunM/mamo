@@ -5,36 +5,32 @@ import static Tester_G.zz_act
 import static Util.to_nums
 import static Util.neg1
 
-salaries = [];
+def m001(ss){ return to_nums(ss[0]);}
+def test_m(){ def res = m001(["10 3 2 5 7 8"]); println(res);}   // exp is
 
-def m001(ss){
-  salaries.clear();
-  for(int i= 0; i<ss.size(); i++){ salaries.add(0);}
-}
-def test_m(){ m001(["Y","N"]); println(salaries);}   // exp is
-
-def getSaraly(i,ss){
-  if(salaries[i] == 0){
-    def salary = 0, s = ss[i];
-    for(int j= 0; j<s.size(); j++){ if(s[j] == 'Y'){ salary += getSaraly(j,ss);}}
-    if(salary == 0){ salary = 1;}
-    salaries[i] = salary;
+def domain(ns){
+  def ans = 0, dp = [];
+  for(int i= 0; i<ns.size()-1; i++){
+    dp << ns[i]; 
+    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
+    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i]);}
+    ans = Math.max(dp[i], ans);
   }
-  return salaries[i];
+  for(int i= 0; i<ns.size()-1; i++){
+    dp[i] = ns[i+1];
+    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
+    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i+1]);}
+    ans = Math.max(dp[i], ans);
+  }
+  return ans;
 }
-
-def domain(ss){
-  def total = 0;
-  for(int i= 0; i<ss.size(); i++){ total += getSaraly(i,ss);}
-  return total;
-}
-def test_d(){ def arg = ["NNYN","NNYN","NNNN","NYYN"]; m001(arg); def res = domain(arg); println(res);}   // exp is
+def test_d(){ def res = domain([10,3,2,5,7,8]); println(res);}   // exp is
 
 def domains(ss){ // main
-m001(ss); def res = domain(ss);
+  def res = domain(m001(ss));
   return [res.toString()];
 }
-def test(){ def res = domains(["N"]); println(res);}
+def test(){ def res = domains(["10 3 2 5 7 8"]); println(res);}
 
 class User { 
   def stdin, lines = [];

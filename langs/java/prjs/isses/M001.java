@@ -59,41 +59,39 @@ public class M001{
     t.test(name, ans.toString(),exp.toString());
   }
   public final List<String> lines; public final FromString fs;
-  private List<Integer> ns = new ArrayList<>();
+  private List<Integer> ns;
 
   public M001(UserFile user){ this.lines = user.list(); this.fs = new FromString();}
   
-  private void m001(List<String> ss) {
-    int len = ss.size();
-    for(int i= 0; i<len; i++){ this.ns.add(0);}
-  }
-  public void test_m(){ m001(asList("NNNN","YYYY")); System.out.println(this.ns);} // exp is 
+  private void m001() { this.ns = fs.toNums(lines.get(0));}
+  public void test_m(){ m001(); System.out.println(this.ns);} // exp is 
 
-  private int getSaraly(int i, List<String> ss){
-    if(this.ns.get(i) == 0){
-      int salary = 0; String s = ss.get(i);
-      for(int j= 0; j<s.length(); j++){ if(s.charAt(j) == 'Y'){ salary += getSaraly(j,ss);}}
-      if(salary == 0){ salary = 1;}
-      this.ns.set(i,salary);
+  private int domain(List<Integer> ns) {
+    int ans = 0; List<Integer> dp = new ArrayList<>();
+    for(int i= 0; i<ns.size() - 1; i++){
+      dp.add(ns.get(i));
+      if( i > 0){ dp.set(i, Math.max(dp.get(i), dp.get(i-1)));}
+      if( i > 1){ dp.set(i, Math.max(dp.get(i), dp.get(i-2)+ ns.get(i)));}
+      ans = Math.max(dp.get(i), ans);
     }
-    return this.ns.get(i);
+    for(int i= 0; i<ns.size() - 1; i++){
+      dp.set(i, ns.get(i+1));
+      if( i > 0){ dp.set(i, Math.max(dp.get(i), dp.get(i-1)));}
+      if( i > 1){ dp.set(i, Math.max(dp.get(i), dp.get(i-2)+ ns.get(i+1)));}
+      ans = Math.max(dp.get(i), ans);
+    }
+    return ans;
   }
-  private int domain(List<String> ss) {
-    int total = 0;
-    for(int i= 0; i<ss.size(); i++){ total += getSaraly(i,ss);}
-    return total;
-  }
-  public void test(){
-    List<String> arg = asList("NNYN","NNYN","NNNN","NYYN");
-    m001(arg); 
+  public void test_d(){
+    List<Integer> arg = asList(10,3,2,5,7,8);
     int res = domain(arg); System.out.println(res);
   }  // exp is exp
 
   public List<String> domains(){
-    m001(this.lines); int res = domain(this.lines);
+    m001(); int res = domain(this.ns);
     return asList(String.valueOf(res));
   }// main
-  public void test_ds(){ List<String> res = domains(); System.out.println(res);}
+  public void test(){ List<String> res = domains(); System.out.println(res);}
 }
 // input product
 class User extends UserFile{

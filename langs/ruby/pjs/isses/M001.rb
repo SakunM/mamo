@@ -2,33 +2,33 @@
 require '../../utils/tester.rb'; require '../../utils/from_file.rb'
 require '../../utils/from_string.rb'; require '../../utils/to_string.rb'
 
-@salaries
-def m001(ss) l = ss.size(); @salaries = Array.new(l,0) end
-def test_m() m001 ["N"]; p(@salaries) end   #exp is exp
+def m001(ss) to_nums ss[0] end
+def test_m() res = m001 ["10 3 2 5 7 8"]; p(res) end   #exp is exp
 
-def getSaraly(i, ss)
-  if @salaries[i] == 0 then
-    salary = 0; s = ss[i]
-    for j in 0...s.size() do if s[j] == 'Y' then salary += getSaraly(j,ss) end end
-    if salary == 0 then salary = 1 end
-    @salaries[i] = salary
+def domain(ns)
+  n = ns.size; ans = 0; bp = [];
+  for i in 0..n-2 do
+    bp << ns[i]
+    if i > 0 then bp[i] = [bp[i],bp[i-1]].max end
+    if i > 1 then bp[i] = [bp[i], bp[i-2] + ns[i]].max end
+    ans = [ans, bp[i]].max
   end
-  @salaries[i]
+  for i in 0..n-2 do
+    bp[i] = ns[i+1]
+    if i > 0 then bp[i] = [bp[i],bp[i-1]].max end
+    if i > 1 then bp[i] = [bp[i],bp[i-2] + ns[i+1]].max end
+    ans = [ans,bp[i]].max
+  end
+  ans
 end
-
-def domain(ss)
-  total = 0
-  for i in 0...ss.size() do total += getSaraly(i,ss) end
-  total
-end
-def test_d() m001(ss); res = domain ["NNYN","NNYN","NNNN","NYYN"]; p res end   #exp is exp
+def test_d() res = domain [10,3,2,5,7,8]; p res end   #exp is exp
 
 def domains(ss) # main
-  m001(ss)
-  res = domain(ss)
+  arg = m001(ss)
+  res = domain(arg)
   [res.to_s]
 end
-def test()  res = domains ["N"]; p res end
+def test()  res = domains ["1 2 3 4 5 1 2 3 4 5"]; p res end
 
 def user()
   res = [gets.strip!]
@@ -68,7 +68,7 @@ end
 # main M001 m001 domain user
 if __FILE__ == $0 then
   # test
-  refactor
-  # develop
+  # refactor
+  develop
   # product
 end 
