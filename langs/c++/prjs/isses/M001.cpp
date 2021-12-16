@@ -15,40 +15,32 @@ using std::queue; using std::make_pair; using std::pair;
 //　このモジュールにはto_string.cppが含まれているので、何らかの値をうけて、文字列表現を返すよ sS,sSL,sSLL,sI,sIL,sILL,join etc..
 #include "../../utils/from_string.cpp" // 文字列を受け取って色々な物を返す関数達がいるよ split,tails, to_i, to_nums etc..
 
-int salaries[50];
-void m001(){ for(int i= 0; i<50; i++){ salaries[i] = 0;}}
-void test(){ m001(); for(int i= 0; i<50; i++){ pi(salaries[i]);}}
+Ns m001(Ss ss){ return to_nums(ss[0]);}
+void test_m(){ Ns res = m001({"10 3 2 5 7 8"}); pNs(res);}
 
-int getSalary(int i, Ss relations){
-  if (salaries[i] == 0){
-    int salary = 0;
-    string relation = relations[i];
-    for(int j= 0; j<relation.size(); j++){
-      if( relation[j] == 'Y'){
-        salary += getSalary(j, relations);
-      }
-    }
-    if(salary == 0){ salary = 1;}
-    salaries[i] = salary;
+int domain(Ns ns){
+  int ans = 0; Ns bp;
+  for(int i= 0; i<ns.size()-1; i++){
+    bp.push_back(ns[i]);
+    if( i > 0){ bp[i] = std::max(bp[i], bp[i-1]);}
+    if( i > 1){ bp[i] = std::max(bp[i], bp[i-2] + ns[i]);}
+    ans = std::max(ans, bp[i]);
   }
-  return salaries[i];
-}
-int domain(Ss relations){
-  int total = 0;
-  for(int i= 0; i<relations.size(); i++){ 
-    total += getSalary(i, relations);
+   for(int i= 0; i<ns.size()-1; i++){
+    bp[i] = ns[i+1];
+    if( i > 0){ bp[i] = std::max(bp[i], bp[i-1]);}
+    if( i > 1){ bp[i] = std::max(bp[i], bp[i-2] + ns[i+1]);}
+    ans = std::max(ans, bp[i]);
   }
-  return total;
+  return ans;
 }
-void test_d() { int res = domain({"NNNN","NNNN","NNNN","NNNN"}); pi(res); }  // exp is
+void test_d() { int res = domain({10,3,2,5,7,8}); pi(res); }  // exp is
 // main
 Ss domains(Ss arg) {
-  m001();
-  int res = domain(arg);
+  int res = domain(m001(arg));
   return {to_string(res)};
-  // return {"1"};
 }
-void test_ds() { Ss res = domains({"NNNN","NNNN","NNNN","NNNN"}); pSs(res);}  // exp is 
+void test() { Ss res = domains({"10 3 2 5 7 8"}); pSs(res);}  // exp is 
 
 Ss user(){
   Ss lines;

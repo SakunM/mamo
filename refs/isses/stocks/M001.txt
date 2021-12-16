@@ -241,7 +241,29 @@ test_ds = let res = domains ["10 3 2 5 7 8"] in show res
 
 OCamlで実装
 基本的な戦略はHaskellで出来ているので、OCamlの流儀に合わせるだけだ。
+let m001 ss = to_nums (L.hd ss)
+let test_m() = let res = m001 ["10 3 2 5 7 8"] in pNs res
 
+let setter v i xs = let f = take i xs and r = drop (i+1) xs in f @ (v::r)
+let test_s() = let res = setter 3 2 [0;0;0;0] in pNs res  (* exp is exp *)
+
+let domain ns dp = 
+  let folder1 ac i = let ac1 = setter (L.nth ns i) i ac in
+    if i > 0 then let m = max (L.nth ac1 i) (L.nth ac1 (i-1)) in let ac2 = setter m i ac1 in
+      if i > 1 then let m2 = max (L.nth ac2 i) ((L.nth ac2 (i-2)) + (L.nth ns i)) in setter m2 i ac2
+      else ac2
+    else ac1
+  and folder2 ac i = let ac1 = setter (L.nth ns (i+1)) i ac in
+    if i > 0 then let m = max (L.nth ac1 i) (L.nth ac1 (i-1)) in let ac2 = setter m i ac1 in
+      if i > 1 then let m2 = max (L.nth ac2 i) ((L.nth ac2 (i-2)) + (L.nth ns (i+1))) in setter m2 i ac2
+      else ac2
+    else ac1
+  in max (maxs(L.fold_left folder1 dp (nums0to (L.length dp-1)))) (maxs(L.fold_left folder2 dp (nums0to (L.length dp-1))))
+let test_d() = let res = domain [10;3;2;5;7;8] [0;0;0;0;0]  in pi res
+
+(* main *)
+let domains ss = let ns = m001 ss in let dp = replicate ((L.length ns)-1) 0 in [sI(domain ns dp)]
+let test() = let res = domains ["10 3 2 5 7 8"] in pSs res (* exp is exp *)
 
 C++で実装
 Cで実装
