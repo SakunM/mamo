@@ -19,40 +19,41 @@ use util::utils::sums;
 
 fn to_usize(arg:Vec<i32>) -> Vec<usize>{ arg.iter().map(|ar| *ar as usize).collect()}
 
-fn m001(ss: Vec<&str>) -> Vec<i32>{ ss.iter().map(|_| 0).collect()}   
+fn m001(ss: Vec<&str>) -> Vec<i32>{ to_nums(ss[0].to_string())}   
 fn test_m(){
-    let arg = vec!["NNYN","NNYN","NNNN","NYYN"]; let mut args = m001(arg); println!("args: {:?}",args);
+    let arg = vec!["10 3 2 5 7 8"]; let res = m001(arg); println!("res: {:?}",res);
 }
 
-fn get_saraly(i:usize, ss:&Vec<&str>, ns:&mut Vec<i32>) -> i32 {
-    if ns[i] == 0 {
-        let mut saraly = 0; let s = ss[i];
-        for(idx,j) in s.chars().enumerate(){ if j == 'Y' { saraly += get_saraly(idx,ss,ns);}}
-        if saraly == 0 { saraly = 1;}
-        ns[i] = saraly;
-        return ns[i];
+fn max2(a:i32, b:i32) -> i32{ if a > b {return a;} else{ return b;}}
+fn domain(ns: Vec<i32>) -> i32{
+    let mut ans = 0;
+    let mut dp:Vec<i32> = Vec::new();
+    for i in 0..ns.len()-1 {
+        dp.push(ns[i]);
+        if i > 0 { dp[i] = max2(dp[i-1], dp[i]);}
+        if i > 1 { dp[i] = max2(dp[i], dp[i-2] + ns[i]);}
+        ans = max2(ans, dp[i]);
     }
-    ns[i]
+    for i in 0..ns.len()-1 {
+        dp[i] = ns[i+1];
+        if i > 0 { dp[i] = max2(dp[i-1], dp[i]);}
+        if i > 1 { dp[i] = max2(dp[i], dp[i-2] + ns[i+1]);}
+        ans = max2(ans, dp[i]);
+    }
+    ans
 }
-fn domain(ss:Vec<&str>, ns: &mut Vec<i32>) -> i32{
-    let mut total = 0;
-    for i in 0..ss.len() { total += get_saraly(i,&ss, ns);}
-    total
-}
-fn test(){
-    let mut ns = vec![0,0,0,0,0,0];
-    let res = domain(vec!["NNNNNN","YNYNNY","YNNNNY","NNNNNN","YNYNNN","YNNYNN"], &mut ns);
+fn test_d(){
+    let res = domain(vec![10,3,2,5,7,8]);
     println!("{}",res);
 }
 
 fn domains(ss: Vec<String>)-> Vec<String>{  // main
-    let mut args = m001(from_strings(&ss));
-    let res = domain(from_strings(&ss), &mut args);
+    let ns = m001(from_strings(&ss));
+    let res = domain(ns);
     vec![res.to_string()]
-    // vec!["1".to_string()]
 }
-fn test_ds(){
-    let arg = vec!["N"];
+fn test(){
+    let arg = vec!["10 3 2 5 7 8"];
     let ans = domains(from_strs(arg)); println!("{:?}",ans);
 }
 

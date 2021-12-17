@@ -3,6 +3,17 @@
 #include "to_string.c"
 #include "print_util.c"
 
+// 空白区切りの文字列専用のstrtokを使わない分かり易いロジックを採用した10桁の数値までの限定だ
+void to_nums(char *cs, int *ns){
+  char w[10];
+  int j = 0, k = 0;
+  for(int i= 0; cs[i] != '\0'; i++){
+    if(cs[i] == ' '){ w[j] = '\0'; ns[k++] = atoi(w); j = 0;}
+    w[j++] = cs[i];
+  }
+  w[j] = '\0'; ns[k] = atoi(w);
+}
+
 // デリミタ付きの数値文字列をデリミタ区切りの数値配列に変更
 void splitNums(char *str, char dmt, int *bag){ char *tp = strtok(str, &dmt); int i=0;
   bag[i++] = atoi(tp); while( tp = strtok(NULL, &dmt) ){bag[i++] = atoi(tp);}}

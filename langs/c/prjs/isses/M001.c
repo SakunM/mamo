@@ -10,45 +10,50 @@
 
 static int arg_sz, ans_sz;
 
-void m001(char **ss, int size){ arg_sz = size; ans_sz = 1;}
+int m001(char **ss, int size){
+  arg_sz = size; ans_sz = 1; int res = 0;
+  for(int i= 0; i<strlen(ss[0]); i++){ if(ss[0][i] == ' '){ res++;}}
+  return res+1;
+}
 void test_m(){
-  char **args = fhSs(2); args[0] = fh_line("N"); args[1] = fh_line("Y"); m001(args, 2); printf("arg_sz is %d",arg_sz);
+  char **args = fhSs(1); args[0] = fh_line("10 3 2 5 7 8"); int res = m001(args, 1); printf("res is %d",res);
 }  // exp is exp
 
-int getSaraly(int i, char **ss, int *gns){
-  if(gns[i] == 0){
-    int saraly = 0;
-    char *s = ss[i];
-    for(int j= 0; j<arg_sz; j++){ if(s[j] == 'Y'){ saraly += getSaraly(j,ss,gns);}}
-    if(saraly == 0){ saraly = 1;}
-    gns[i] = saraly;
-    return gns[i];
+int max2(int a, int b){ return a > b ? a : b;}
+int domain(int *ns, int sz){
+  int ans = 0, bp[sz-1];
+  for(int i= 0; i<sz-1; i++){
+    bp[i] = ns[i];
+    if( i > 0){ bp[i] = max2(bp[i], bp[i-1]);}
+    if( i > 1){ bp[i] = max2(bp[i], bp[i-2] + ns[i]);}
+    ans = max2(ans, bp[i]);
   }
-  return gns[i];
-}
-
-int domain(char **ss){
-  int total = 0; int gns[arg_sz]; for(int i= 0; i<arg_sz; i++){ gns[i] = 0;}
-  for(int i= 0; i<arg_sz; i++){ total += getSaraly(i,ss,gns);}
-  return total;
+  for(int i= 0; i<sz-1; i++){
+    bp[i] = ns[i+1];
+    if( i > 0){ bp[i] = max2(bp[i], bp[i-1]);}
+    if( i > 1){ bp[i] = max2(bp[i], bp[i-2] + ns[i+1]);}
+    ans = max2(ans, bp[i]);
+  }
+  return ans;
 }
 void test_d(){
-  char **args = fhSs(4); args[0] = fh_line("NNYN"); args[1] = fh_line("NNYN"); args[2] = fh_line("NNNN"); args[3] = fh_line("NYYN");
-  m001(args,4);
-  int res = domain(args);
+  int ns[] = {1,2,3,4,5,1,2,3,4,5};
+  int res = domain(ns,10);
   pi(res);
 }
 // main
 char **domains(char **arg, int sz){
-  m001(arg,sz);
-  int res = domain(arg);
+  int ns_sz = m001(arg,sz);
+  int ns[ns_sz];
+  to_nums(arg[0], ns);
+  int res = domain(ns,ns_sz);
   char **ans = fhSs(ans_sz);
   ans[0] = sI(res);
   return ans;
 }
 void test(){
-  char ** args = fhSs(4); args[0] = fh_line("NNYN"); args[1] = fh_line("NNYN"); args[2] = fh_line("NNNN"); args[3] = fh_line("NYYN");
-  char **res = domains(args,4); pSs(res,ans_sz);
+  char ** args = fhSs(1); args[0] = fh_line("10 3 2 5 7 8");
+  char **res = domains(args,1); pSs(res,ans_sz);
 }  // exp is exp
 
 UserFF user() {
@@ -84,7 +89,7 @@ void develop() {
 }
 
 void refactor() {
-  char *issue = "a:/pj/mamo/refs/isses/issue1.txt", *result = "a:/pj/mamo/refs/isses/result1.txt";
+  char *issue = "a:/pj/mamo/refs/isses/issue2.txt", *result = "a:/pj/mamo/refs/isses/result2.txt";
   UserFF arg = ff_list(issue), exp = ff_list(result); 
   // ps(ff_sSs(arg)); ps(ff_sSs(exp)); pi(arg.size);
   char **ans = domains(arg.lines,arg.size);
