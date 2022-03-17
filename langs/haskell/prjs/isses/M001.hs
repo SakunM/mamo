@@ -3,7 +3,8 @@ import qualified Data.Map as Map
 import Data.Maybe (fromMaybe, fromJust)
 import Control.Monad(guard, MonadPlus, mzero, mplus, when)
 import Control.Monad.ST (ST)
-import Control.Applicative(pure)
+import Control.Applicative(pure, (<*>))
+import Data.Functor((<$>))
 import Numeric(showHex, readInt)
 import Data.Char(digitToInt)
 
@@ -12,31 +13,17 @@ import Tester(zz_act,pad_n)
 import FromString(toI,to_nums,neg1)
 import Util(isin,notin,show_nss)
 
-m001 :: [String] -> [Int]
-m001 (s:_) =  to_nums s
-test_m = let res = m001 ["10 3 2 5 7 8"] in show res  -- exp is
-
-setter :: a -> Int -> [a] -> [a]
-setter v i xs = f ++ (v:r) where f = take i xs; r = drop (i+1) xs
-test_s = let res = setter 10 0 [0,0,0,0,0] in show res
-
-domain :: (Num a, Ord a) => [a] -> [a] -> a
-domain ns dp = max (maximum (foldl(folder1) dp [0..(length dp)-1])) (maximum (foldl(folder2) dp [0..(length dp)-1])) where
-  folder1 ac i = let ac1 = setter (ns!!i) i ac in if i > 0 
-    then let m = max (ac1!!i) (ac1!!(i-1)) in let ac2 = setter m i ac1 in if i > 1
-      then let m2 = max (ac2!!i) (ac2!!(i-2) + ns!!i) in setter m2 i ac2
-      else ac2
-    else ac1
-  folder2 ac i = let ac1 = setter (ns!!(i+1)) i  ac in if i > 0
-    then let m = max (ac1!!i) (ac1!!(i-1)) in let ac2 = setter m i ac1 in if i > 1
-      then let m2 = max (ac2!!i) (ac2!!(i-2) + ns!!(i+1)) in setter m2 i ac2
-      else ac2
-    else ac1
-test = let res = domain [10,3,2,5,7,8] [0,0,0,0,0] in show res
+m001 :: [String] -> [String]
+m001 (f:s:[]) =  first ++ second where first = words f; second = words s
+-- test = let res = m001 ["fishing gardening swimming fishing","hunting fishing fishing biting"] in show res  -- exp is
+domain :: (Num v, Ord k) => [k] -> Map.Map k v
+domain ss = foldl folder Map.empty ss where
+  folder res s = Map.insert s val res where mb = Map.lookup s res; val = case mb of Just(x) -> x + 1 ; Nothing -> 1
+-- test = let res = domain ["fishing","gardening","swimming","fishing","hunting","fishing","fishing","biting"] in show res
 
 domains :: [String] -> [String]
-domains ss = let ns = m001 ss; dp = replicate (length ns - 1) 0 in [show $domain ns dp]
-test_ds = let res = domains ["10 3 2 5 7 8"] in show res
+domains ss = [show res] where fs = m001 ss; ms = domain fs; res = maximum (Map.elems ms)
+test = let res = domains ["fishing gardening swimming fishing","hunting fishing fishing biting"] in show res
 
 user :: IO [String]; user = do 
   -- line <- getLine; o
@@ -79,7 +66,7 @@ refactor :: IO String; refactor = do
   -- return((unlines arg) ++ (unlines exp))
   return (zz_act "M001 Test" (domains(arg)) exp  "refactor")
 
--- M001 m001 domain domains user permutations
+-- M001 m001 domain domains user
 main = do
   -- ans <- paiza
   ans <- develop

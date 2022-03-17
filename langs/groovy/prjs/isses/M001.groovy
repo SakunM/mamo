@@ -5,32 +5,15 @@ import static Tester_G.zz_act
 import static Util.to_nums
 import static Util.neg1
 
-def m001(ss){ return to_nums(ss[0]);}
-def test_m(){ def res = m001(["10 3 2 5 7 8"]); println(res);}   // exp is
-
-def domain(ns){
-  def ans = 0, dp = [];
-  for(int i= 0; i<ns.size()-1; i++){
-    dp << ns[i]; 
-    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
-    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i]);}
-    ans = Math.max(dp[i], ans);
-  }
-  for(int i= 0; i<ns.size()-1; i++){
-    dp[i] = ns[i+1];
-    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
-    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i+1]);}
-    ans = Math.max(dp[i], ans);
-  }
-  return ans;
-}
-def test_d(){ def res = domain([10,3,2,5,7,8]); println(res);}   // exp is
-
+def m001(ss){ def first = ss[0].split(" "), second = ss[1].split(" "); return first + second;}
+// def test(){ def res = m001(["fishing gardening swimming fishing","hunting fishing fishing biting"]); println(res);}
+def domain(ss){ def res = [:]; for(s in ss){ res[s] = res[s] == null ? 1 : res[s] + 1;}; return res;}
+// def test(){ def res = domain(["fishing","gardening","swimming","fishing","hunting","fishing","fishing","biting"]); println(res);} 
 def domains(ss){ // main
-  def res = domain(m001(ss));
+  def map = domain(m001(ss)), res = map.values().max();
   return [res.toString()];
 }
-def test(){ def res = domains(["10 3 2 5 7 8"]); println(res);}
+def test(){ def res = domains(["fishing gardening swimming fishing","hunting fishing fishing biting"]); println(res);}
 
 class User { 
   def stdin, lines = [];

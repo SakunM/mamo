@@ -5,7 +5,7 @@
 
 //配列の合計を返す
 int sums(const int *box, int lim){int sm=0,i; for(i=0; i<lim; i++){sm += box[i];} return sm;}
-void sumsT(){ int ns[] = {1,2,3}; char *act = sI(sums(ns,3)); ez_t("sums", act, "6", "配列の合計を返す"); free(act);}
+void sumsT(){ int ns[] = {1,2,3}; char *act = sI(sums(ns,3)); ez_t("sums", act, "6", "配列の合計を返す");}
 
 /** 配列関係の関数 **/
 void setZero(int *box, int lim){ int i; for(i=0; i<lim; i++){box[i] = 0;}}

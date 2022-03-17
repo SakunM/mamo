@@ -42,7 +42,7 @@ void toIssT() {
 //C言語は何かとサイズにうるさいので、受け取った文字列の配列に含まれる文字の数を返す関数が必要だ
 int fsCSize(char *cs) {
   int id = 0, n = 0;
-  for(int i= 0; i<strlen(cs); i++){ if(cs[i] == '\n'){ id++; n = 0;} n++;}
+  for(int i= 0; i<(int)strlen(cs); i++){ if(cs[i] == '\n'){ id++; n = 0;} n++;}
   if(n == 1){ id--;} return id;
 }
 void fsCSizeT() {
@@ -53,10 +53,10 @@ void fsCSizeT() {
 //　文字列をデリミタで分割、ヒープ領域に作った文字列リストを返す
 char **split( char *ss, char dmt){
   ss = trim(ss);
-  int size = 0;for(int i= 0; i<strlen(ss); i++){if(ss[i] == dmt){ size++;}};
+  int size = 0;for(int i= 0; i<(int)strlen(ss); i++){if(ss[i] == dmt){ size++;}};
   char buf[WORD]; int b_id = 0, s_id = 0; int i;
-  char **res = fhGetHeap(sizeof(char *) * size); res[size];
-  for(i= 0; i<strlen(ss); i++){
+  char **res = fhGetHeap(sizeof(char *) * size);
+  for(i= 0; i<(int)strlen(ss); i++){
     if(ss[i] == dmt){
       buf[b_id] = '\0';
       res[s_id++] = fh_line(buf);

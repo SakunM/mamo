@@ -1,34 +1,16 @@
 #encoding: UTF-8
 require '../../utils/tester.rb'; require '../../utils/from_file.rb'
 require '../../utils/from_string.rb'; require '../../utils/to_string.rb'
+# fs -> to_nums; ts -> sNs;
 
-def m001(ss) to_nums ss[0] end
-def test_m() res = m001 ["10 3 2 5 7 8"]; p(res) end   #exp is exp
-
-def domain(ns)
-  n = ns.size; ans = 0; bp = [];
-  for i in 0..n-2 do
-    bp << ns[i]
-    if i > 0 then bp[i] = [bp[i],bp[i-1]].max end
-    if i > 1 then bp[i] = [bp[i], bp[i-2] + ns[i]].max end
-    ans = [ans, bp[i]].max
-  end
-  for i in 0..n-2 do
-    bp[i] = ns[i+1]
-    if i > 0 then bp[i] = [bp[i],bp[i-1]].max end
-    if i > 1 then bp[i] = [bp[i],bp[i-2] + ns[i+1]].max end
-    ans = [ans,bp[i]].max
-  end
-  ans
+def m001(ss)
+  first = ss[0].split " "; second = ss[1].split " "; first + second;
 end
-def test_d() res = domain [10,3,2,5,7,8]; p res end   #exp is exp
-
-def domains(ss) # main
-  arg = m001(ss)
-  res = domain(arg)
-  [res.to_s]
-end
-def test()  res = domains ["1 2 3 4 5 1 2 3 4 5"]; p res end
+# def test() res = m001 ["fishing gardening swimming fishing","hunting fishing fishing biting"]; p(res) end   #exp is exp
+def domain(ss) res = Hash.new(0); for s in ss do res[s] += 1 end; res end
+# def test() res = domain ["fishing","gardening","swimming","fishing","hunting","fishing","fishing","biting"]; p res end
+def domains(ss) fs = m001 ss; mp = domain fs; res = mp.values.max; [res.to_s] end #main
+def test()  res = domains ["fishing gardening swimming fishing","hunting fishing fishing biting"]; p res end
 
 def user()
   res = [gets.strip!]

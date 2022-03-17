@@ -12,30 +12,25 @@ open String
 #use "../../utils/util.ml"
 
 module L = List
+module S = String
+module A = Array
 
-let m001 ss = to_nums (L.hd ss)
-let test_m() = let res = m001 ["10 3 2 5 7 8"] in pNs res
-
-let setter v i xs = let f = take i xs and r = drop (i+1) xs in f @ (v::r)
-let test_s() = let res = setter 3 2 [0;0;0;0] in pNs res  (* exp is exp *)
-
-let domain ns dp = 
-  let folder1 ac i = let ac1 = setter (L.nth ns i) i ac in
-    if i > 0 then let m = max (L.nth ac1 i) (L.nth ac1 (i-1)) in let ac2 = setter m i ac1 in
-      if i > 1 then let m2 = max (L.nth ac2 i) ((L.nth ac2 (i-2)) + (L.nth ns i)) in setter m2 i ac2
-      else ac2
-    else ac1
-  and folder2 ac i = let ac1 = setter (L.nth ns (i+1)) i ac in
-    if i > 0 then let m = max (L.nth ac1 i) (L.nth ac1 (i-1)) in let ac2 = setter m i ac1 in
-      if i > 1 then let m2 = max (L.nth ac2 i) ((L.nth ac2 (i-2)) + (L.nth ns (i+1))) in setter m2 i ac2
-      else ac2
-    else ac1
-  in max (maxs(L.fold_left folder1 dp (nums0to (L.length dp-1)))) (maxs(L.fold_left folder2 dp (nums0to (L.length dp-1))))
-let test_d() = let res = domain [10;3;2;5;7;8] [0;0;0;0;0]  in pi res
-
+(* ts => sI,sJoin  fs => to_i,to_nums  tw => num0to,replicate,lines,words,take,drop,any fw => isin,notin, maxs,mins,sums*)
+let m001 = function f::s::[] ->  let first = words f and second = words s in first @ second | _ -> failwith "err"
+(* let test() = let res = m001 ["fishing gardening swimming fishing";"hunting fishing fishing biting"] in pSs res *)
+let rec uniqe = function [] -> [] | x::xs -> if L.exists (fun s -> s = x) xs then uniqe xs else x :: (uniqe xs)
+(* let test() = let res = uniqe ["fishing";"gardening";"swimming";"fishing";"hunting";"fishing";"fishing";"biting"] in pSs res *)
+let showMap ms = A.iter(fun (k,v) -> printf "(%s,%d)" k v ) ms
+let initMap un = let un_a = A.of_list un in A.map(fun a -> (a,0)) un_a
+(* let test() = let res = initMap ["hoge";"fuga";"mamo"] in showMap res *)
+let setMap s map = for i = 0 to (A.length map)-1 do let (k,v) = map.(i) in if k = s then map.(i) <- (k,v+1) else map.(i) <- (k,v) done
+(* let test() = let res = [|("mamo",0);("hoge",0);("fuga",0)|] in setMap "hoge" res; showMap res *)
+let domain ss = let un = uniqe ss in let map = initMap un in L.iter (fun s -> setMap s map) ss; map
+(* let test() = let res = domain ["fishing";"gardening";"swimming";"fishing";"hunting";"fishing";"fishing";"biting"] in showMap res *)
+let domains ss = let fs = m001 ss in let map = domain fs in let ns = A.map(fun (k,v) -> v) map in
+  let res = maxs(A.to_list ns) in [sI res]
+let test() = let res = domains ["fishing gardening swimming fishing";"hunting fishing fishing biting"] in pSs res
 (* main *)
-let domains ss = let ns = m001 ss in let dp = replicate ((L.length ns)-1) 0 in [sI(domain ns dp)]
-let test() = let res = domains ["10 3 2 5 7 8"] in pSs res (* exp is exp *)
 
 let user() = let line = read_line() in let lim = (length line) - 1 in let lines = L.map(fun _ -> read_line())(replicate lim 0) in line ::lines
 

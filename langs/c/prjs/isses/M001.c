@@ -10,50 +10,58 @@
 
 static int arg_sz, ans_sz;
 
-int m001(char **ss, int size){
-  arg_sz = size; ans_sz = 1; int res = 0;
-  for(int i= 0; i<strlen(ss[0]); i++){ if(ss[0][i] == ' '){ res++;}}
-  return res+1;
+void showSs(char ss[][WORD], int size){
+  char chars[LINE] = {0}; chars[0] = '[';
+  for(int i= 0; i<size-1; i++){ strcat(chars,ss[i]); strcat(chars,",");}
+  strcat(chars,ss[size-1]); strcat(chars,"]"); ps(chars);
 }
-void test_m(){
-  char **args = fhSs(1); args[0] = fh_line("10 3 2 5 7 8"); int res = m001(args, 1); printf("res is %d",res);
-}  // exp is exp
-
-int max2(int a, int b){ return a > b ? a : b;}
-int domain(int *ns, int sz){
-  int ans = 0, bp[sz-1];
-  for(int i= 0; i<sz-1; i++){
-    bp[i] = ns[i];
-    if( i > 0){ bp[i] = max2(bp[i], bp[i-1]);}
-    if( i > 1){ bp[i] = max2(bp[i], bp[i-2] + ns[i]);}
-    ans = max2(ans, bp[i]);
+// void test(){ char arg[][WORD] = {"hoge","fuga","moge"}; showSs(arg,3);}
+void m001(char *str, char dmt, char res[][WORD], int size){
+  int id = 0, id_str = 0;
+  for(int i= 0; i<size; i++){
+    for(int j= 0; j<WORD; j++){
+      char ch = str[id_str];
+      if(ch == dmt || ch == '\0'){
+        if(ch == dmt){ res[i][id] = '\0'; id = 0; id_str++; break;}
+        if(ch == '\0'){ res[i][id] = '\0'; return;}
+      }
+      res[i][id] = str[id_str]; id++; id_str++;
+    }
   }
-  for(int i= 0; i<sz-1; i++){
-    bp[i] = ns[i+1];
-    if( i > 0){ bp[i] = max2(bp[i], bp[i-1]);}
-    if( i > 1){ bp[i] = max2(bp[i], bp[i-2] + ns[i+1]);}
-    ans = max2(ans, bp[i]);
+}
+// void test(){ char str[] = {"hoge fuga mamo"}; char res[3][WORD]; m001(str, ' ', res, 3); showSs(res,3);}
+int domain(char all[][WORD], int size){
+  int res[size];
+  for(int i= 0; i<size; i++){
+    int count = 0;
+    for(int j= 0; j<size; j++){
+      if(strcmp(all[i], all[j]) == 0){ count++;}
+    }
+    res[i] = count;
   }
-  return ans;
+  return maxs(res,size);
 }
-void test_d(){
-  int ns[] = {1,2,3,4,5,1,2,3,4,5};
-  int res = domain(ns,10);
-  pi(res);
-}
-// main
+// void test(){ char arg[][WORD] = {"hoge","fuga","mamo","fuga"}; int res = domain(arg,4); pi(res);}
+// main develop
 char **domains(char **arg, int sz){
-  int ns_sz = m001(arg,sz);
-  int ns[ns_sz];
-  to_nums(arg[0], ns);
-  int res = domain(ns,ns_sz);
+  arg_sz = sz; ans_sz = 1; int size = 1;
+  for(int i= 0; i<(int)strlen(arg[0]); i++){ if(arg[0][i] == ' '){ size++;}}
+  char fst[size][WORD]; m001(arg[0], ' ', fst, size);
+  char snd[size][WORD]; m001(arg[1], ' ', snd, size);
+  char all[size*2][WORD]; int id = 0;
+  for(int i= 0; i<size; i++){ strcpy(all[id++],fst[i]);}
+  for(int i= 0; i<size; i++){ strcpy(all[id++],snd[i]);}
+  int res = domain(all,size*2);
   char **ans = fhSs(ans_sz);
   ans[0] = sI(res);
   return ans;
 }
 void test(){
-  char ** args = fhSs(1); args[0] = fh_line("10 3 2 5 7 8");
-  char **res = domains(args,1); pSs(res,ans_sz);
+  char ** args = fhSs(2); 
+  args[0] = fh_line("fishing gardening swimming fishing");
+  args[1] = fh_line("hunting fishing fishing biting");
+  char **res = domains(args,2); pSs(res,ans_sz);
+  // develop();
 }  // exp is exp
 
 UserFF user() {
@@ -89,7 +97,7 @@ void develop() {
 }
 
 void refactor() {
-  char *issue = "a:/pj/mamo/refs/isses/issue2.txt", *result = "a:/pj/mamo/refs/isses/result2.txt";
+  char *issue = "a:/pj/mamo/refs/isses/issue1.txt", *result = "a:/pj/mamo/refs/isses/result1.txt";
   UserFF arg = ff_list(issue), exp = ff_list(result); 
   // ps(ff_sSs(arg)); ps(ff_sSs(exp)); pi(arg.size);
   char **ans = domains(arg.lines,arg.size);

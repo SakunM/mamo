@@ -12,7 +12,7 @@ void pc(char arg){printf("%c\n",arg);}
 void ps(char *arg){printf("%s\n",arg);}
 void pf(double arg){printf("%f\n", arg);}
 void pp(void *arg){printf("%p\n", arg);}
-void pb(bool b){printf("%s\n", b ? "ture" : "false");}
+void pb(bool b){printf("%s\n", b ? "true" : "false");}
 
 void ppi(int arg){printf("%d",arg);}
 void ppc(char arg){printf("%c",arg);}

@@ -11,8 +11,8 @@ let notinT() = ezT "notin" (notin "a" ["b";"c";"d"])
 
 (* リスト処理系メソッド *)
 (* リストの最大値を返す*)
-let rec maxs ns = match ns with [] -> 0 | n :: nts -> max n (maxs nts)
-let maxsT() = ezT "maxs" (maxs [3;4;5] = 5)
+let rec maxs ns = match ns with [] -> min_int | n :: nts -> max n (maxs nts)
+let maxsT() = ezT "maxs" (maxs [-3;-4;-5] = -3)
 
 (* リストの最小値を返す*)
 let rec mins ns = match ns with [] -> max_int | n :: nts -> min n (mins nts)
@@ -26,10 +26,6 @@ let sumsT() = ezT ~dsp:"return by list sum val" "sum" (sums [1;2;3] = 6)
 let rec toSL len id str = if len = id then [] else sC(str.[id]) :: (toSL len (id+1) str)
 let test_sl() = let res = toSL 3 0 "123" in pSs res  (* ["1";"2","3"] *)
 
-(* 数値のリストから一番大きい数を返す *)
-let rec maxs = function [] -> 0 | n :: ns -> max n (maxs ns)
-let test_mx() = let res = maxs [3;1;4;10] in pi res  (* exp is exp *)
-
 let u_allTs sc =
   isinT();
   notinT();
@@ -37,4 +33,4 @@ let u_allTs sc =
   minsT();   (* リストの最小値を返す*)
   sumsT()    (* リストの要素の合計を返す*)
 
-(* let() = u_allTs "go"*)
+(* let() = u_allTs "go" *)

@@ -1,46 +1,46 @@
-
-// #include <map>
+#include <map>
+using std::make_pair; using std::pair;
 #include <tuple>
 using std :: tuple; using std :: tie;
 #include <queue>
-using std::queue; using std::make_pair; using std::pair;
+using std::queue;
+#include <sstream>
+using std::ostringstream;
 
 #include "../../utils/tester.cpp"       // zz_act関数は説明付きテスト 成功時は一行で表し失敗した時はどこが違うか教えるよ
-// このモジュールにはcolors.cppが含まれているのでsuc,err,norm,fineが使えるよ
 #include "../../utils/from_file.cpp"    //　User_FFはクラスなのでlistメソッドでファイルの内容をとりだすよ
-//　このモジュールにはform_string.cppが含まれているので、to_i spllit etc..
-#include "../../utils/print_util.cpp"   // 画面表示に関する色々な関数を定義している整数表示はpI,pIL,pILL　文字列表示はpS,pSL,pSLL
-//　このモジュールにはto_string.cppが含まれているので、何らかの値をうけて、文字列表現を返すよ sS,sSL,sSLL,sI,sIL,sILL,join etc..
-#include "../../utils/from_wrap.cpp"   // 何らかのリストを受け取り何らかの処理をして結果を返すよ、isin,toIL_sL,sumL,minL,maxL etc..
-//　このモジュールにはto_string.cppが含まれているので、何らかの値をうけて、文字列表現を返すよ sS,sSL,sSLL,sI,sIL,sILL,join etc..
-#include "../../utils/from_string.cpp" // 文字列を受け取って色々な物を返す関数達がいるよ split,tails, to_i, to_nums etc..
-
-Ns m001(Ss ss){ return to_nums(ss[0]);}
-void test_m(){ Ns res = m001({"10 3 2 5 7 8"}); pNs(res);}
-
-int domain(Ns ns){
-  int ans = 0; Ns bp;
-  for(int i= 0; i<ns.size()-1; i++){
-    bp.push_back(ns[i]);
-    if( i > 0){ bp[i] = std::max(bp[i], bp[i-1]);}
-    if( i > 1){ bp[i] = std::max(bp[i], bp[i-2] + ns[i]);}
-    ans = std::max(ans, bp[i]);
-  }
-   for(int i= 0; i<ns.size()-1; i++){
-    bp[i] = ns[i+1];
-    if( i > 0){ bp[i] = std::max(bp[i], bp[i-1]);}
-    if( i > 1){ bp[i] = std::max(bp[i], bp[i-2] + ns[i+1]);}
-    ans = std::max(ans, bp[i]);
-  }
-  return ans;
+#include "../../utils/print_util.cpp"   // 画面表示に関する色々な関数を定義している
+#include "../../utils/from_wrap.cpp"   // 何らかのリストを受け取り何らかの違う構造を返す
+#include "../../utils/from_string.cpp" // 文字列を受け取って色々な違う構造を返す
+// print_util -> pi,pNs,pNss,ps, pSs,PSss,pc,pb,pf; from_string -> <sstream>, split,tails,to_i,to_nums;
+// from_wrap -> <sstream><climits> maxs,mins,sums;
+Ss m001(Ss ss){
+  Ss fst = split(ss[0],' '), snd = split(ss[1],' ');
+  fst.insert(fst.end(),snd.begin(),snd.end());
+  return fst;
 }
-void test_d() { int res = domain({10,3,2,5,7,8}); pi(res); }  // exp is
-// main
+// void test(){ Ss res = m001({"fishing gardening swimming fishing","hunting fishing fishing biting"}); pSs(res);}
+void showMap(std::map<string,int> map){
+  ostringstream oss;
+  for(auto itr = map.begin(); itr != map.end(); ++itr){ oss << "(" << itr->first << "," << itr->second << ")/";}
+  Ss res = split(oss.str(), '/'); pSs(res);
+}
+std::map<string,int> domain(Ss ss){
+  std::map<string,int> res;
+  for(string s: ss){ if(res[s]){ res[s] += 1;} else { res[s] = 1;}}
+  return res;
+}
+void test() {
+  std::map<string,int> res = domain({"fishing","gardening","swimming","fishing","hunting","fishing","fishing","biting"});
+  showMap(res);
+}
+
 Ss domains(Ss arg) {
-  int res = domain(m001(arg));
-  return {to_string(res)};
-}
-void test() { Ss res = domains({"10 3 2 5 7 8"}); pSs(res);}  // exp is 
+  Ss ss = m001(arg); std::map<string,int> map = domain(ss); Ns res;
+  for(auto itr = map.begin(); itr != map.end(); ++itr){ res.push_back(itr->second);}
+  return {sI(maxs(res))};
+} // main
+// void test() { Ss res = domains({"fishing gardening swimming fishing","hunting fishing fishing biting"}); pSs(res);}
 
 Ss user(){
   Ss lines;
@@ -76,8 +76,8 @@ void refactor() {
 }
 // M001 m001 domain user
 int main(){
-  // test();
+  test();
   // refactor();
-  develop();
+  // develop();
   // product();
 }

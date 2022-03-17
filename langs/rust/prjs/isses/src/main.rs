@@ -1,7 +1,7 @@
 #![allow(unused)]
 use std::io;
 use std::collections::HashMap;
-use std::collections::VecDeque;
+// use std::collections::VecDeque;
 // use itertools::Itertools;
 
 mod util;
@@ -17,44 +17,29 @@ use util::utils::maxs;
 use util::utils::mins;
 use util::utils::sums;
 
-fn to_usize(arg:Vec<i32>) -> Vec<usize>{ arg.iter().map(|ar| *ar as usize).collect()}
-
-fn m001(ss: Vec<&str>) -> Vec<i32>{ to_nums(ss[0].to_string())}   
-fn test_m(){
-    let arg = vec!["10 3 2 5 7 8"]; let res = m001(arg); println!("res: {:?}",res);
+fn m001(ss: Vec<&str>) -> Vec<String>{
+    let mut res = Vec::new();
+    for s in ss[0].split_whitespace(){ res.push(s.to_string());}
+    for s in ss[1].split_whitespace(){ res.push(s.to_string());}
+    res
 }
-
-fn max2(a:i32, b:i32) -> i32{ if a > b {return a;} else{ return b;}}
-fn domain(ns: Vec<i32>) -> i32{
-    let mut ans = 0;
-    let mut dp:Vec<i32> = Vec::new();
-    for i in 0..ns.len()-1 {
-        dp.push(ns[i]);
-        if i > 0 { dp[i] = max2(dp[i-1], dp[i]);}
-        if i > 1 { dp[i] = max2(dp[i], dp[i-2] + ns[i]);}
-        ans = max2(ans, dp[i]);
-    }
-    for i in 0..ns.len()-1 {
-        dp[i] = ns[i+1];
-        if i > 0 { dp[i] = max2(dp[i-1], dp[i]);}
-        if i > 1 { dp[i] = max2(dp[i], dp[i-2] + ns[i+1]);}
-        ans = max2(ans, dp[i]);
-    }
-    ans
+// fn test(){ let res = m001(vec!["fishing gardening swimming fishing","hunting fishing fishing biting"]); println!("{:?}",res);}
+fn domain(ss:Vec<&str>) -> HashMap<&str,i32>{
+    let mut res = HashMap::new(); let mut val;
+    for s in ss{ match res.get(s){ None => val = 1, Some(i) => val = i+1}; res.insert(s,val);}
+    res
 }
-fn test_d(){
-    let res = domain(vec![10,3,2,5,7,8]);
-    println!("{}",res);
-}
+// fn test(){ let res = domain(vec!["fishing","gardening","swimming","fishing","hunting","fishing","fishing","biting"]); println!("{:?}",res);}
 
 fn domains(ss: Vec<String>)-> Vec<String>{  // main
-    let ns = m001(from_strings(&ss));
-    let res = domain(ns);
-    vec![res.to_string()]
+    let fs = m001(from_strings(&ss));
+    let map = domain(from_strings(&fs));
+    let ns:Vec<i32> = map.iter().map(|(k,v)| *v).collect();
+    vec![maxs(&ns).to_string()]
 }
 fn test(){
-    let arg = vec!["10 3 2 5 7 8"];
-    let ans = domains(from_strs(arg)); println!("{:?}",ans);
+    let arg = vec!["fishing gardening swimming fishing".to_string(),"hunting fishing fishing biting".to_string()];
+    let res = domains(arg); println!("{:?}",res);
 }
 
 fn user() -> Vec<String>{

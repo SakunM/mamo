@@ -3,34 +3,28 @@ from itertools import combinations, permutations
 # import numpy as np
 # import sys
 from collections import deque
+import math
 
 from tester import zz_act
 from from_file import ffUser
 from to_string import sSs, sNs, unwords
 from from_string import to_i, to_is, to_nums
 
-def m001(ss): return to_nums(ss[0])
-def test_m(): ns = m001(["10 3 2 5 7 8"]); print(ns)
+def m001(ss):
+  first = ss[0].split(" "); second = ss[1].split(" ")
+  return first + second
+# def test(): ss = m001(["fishing gardening swimming fishing","hunting fishing fishing biting"]); print(ss)
 
-def domain(ns):
-  N = len(ns); dp = []; ans = 0
-  for i in range(0,N-1):
-    dp.append(ns[i])
-    if i > 0 : dp[i] = max(dp[i], dp[i-1])
-    if i > 1 : dp[i] = max(dp[i], dp[i-2] + ns[i])
-    ans = max(ans, dp[i])
-  for i in range(0,N-1):
-    dp[i] = ns[i+1]
-    if i > 0: dp[i] = max(dp[i], dp[i-1])
-    if i > 1: dp[i] = max(dp[i], dp[i-2] + ns[i+1])
-    ans = max(ans, dp[i])
-  return ans
-def test(): res = domain([1,2,3,100,4]); print(res)
+def domain(ss):
+  res = {}
+  for s in ss:
+    res[s] = res[s] + 1 if res.get(s) else 1
+  return res
+# def test(): res = domain(["fishing","gardening","swimming","fishing","hunting","fishing","fishing","biting"]); print(res)
 
 def domains(ss): #main
-  res = domain(m001(ss))
-  return [str(res)]
-def test_ds(): ans = domains(["1 2 3 4 5 1 2 3 4 5"]); print(ans)
+  all = m001(ss); dom = domain(all); res = max(dom.values()); return [str(res)]
+def test(): ans = domains(["fishing gardening swimming fishing","hunting fishing fishing biting"]); print(ans)
 
 def user():
   res = []
@@ -60,7 +54,7 @@ def develop():
   developer(issue5, result5, "test-5"); developer(issue6, result6, "test-6")
 
 def refactor():
-  issue = "a:/pj/mamo/refs/isses/issue1.txt"; result = "a:/pj/mamo/refs/isses/result1.txt"
+  issue = "a:/pj/mamo/refs/isses/issue7.txt"; result = "a:/pj/mamo/refs/isses/result7.txt"
   user = ffUser(issue).all(); exp = ffUser(result).all()
   # print(user); print(exp)
   ans = domains(user)
@@ -72,3 +66,4 @@ if __name__ == '__main__':
   # refactor()
   develop()
   # product()
+

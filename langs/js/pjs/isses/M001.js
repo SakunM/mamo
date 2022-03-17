@@ -2,35 +2,21 @@
 const user_path = '../../utils/from_file', t = require('../../utils/tester')("M001 Test"), fw = require('../../utils/from_wrap'),
       ts = require('../../utils/to_string'), tw = require('../../utils/to_wrap'), fs = require('../../utils/from_string'),
       ut = require('../../utils/util');
+// fs => to_i; ts => padR,padL,sSs,sNs; fw => mins,maxs,sumus; tw => to_nums, replicate, fromZ; ut => isin,any,all
 
-function m001(ss){ return fs.to_nums(ss[0]);}
-function test_m(){ let res = m001(["10 3 2 5 7 8"]); console.log(res);}
-
-function domain(ns){
-  let ans = 0, dp = [];
-  for(let i= 0; i<ns.length-1; i++){
-    dp.push(ns[i]);
-    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
-    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i]);}
-    ans = Math.max(ans, dp[i]);
-  }
-  for(let i= 0; i<ns.length-1; i++){
-    dp[i] = ns[i+1];
-    if( i > 0){ dp[i] = Math.max(dp[i], dp[i-1]);}
-    if( i > 1){ dp[i] = Math.max(dp[i], dp[i-2] + ns[i+1]);}
-    ans = Math.max(ans, dp[i]);
-  }
-  return ans;
+function m001(ss){
+  let first = ss[0].split(" "), second = ss[1].split(" "); return first.concat(second);
 }
-function test(){
-  let res = domain([10,3,2,5,7,8]); console.log(res);
-}  // exp is exp
-// main
+// function test(){ let res = m001(["fishing gardening swimming fishing","hunting fishing fishing biting"]); console.log(res);}
+
+function domain(ss){ let m = new Map(); for(let s of ss){ m.set(s, m.get(s) ? m.get(s) + 1 : 1);} return m;}
+// function test(){ let res = domain(["fishing","gardening","swimming","fishing","hunting","fishing","fishing","biting"]); console.log(res);}
+
 function domains(args){
-  let res = domain(m001(args));
+  let maps = domain(m001(args)), res = fw.maxs(Array.from(maps.values()));
   return [res.toString()];
-}
-function test_ds(){ let ans = domains(["10 3 2 5 7 8"]); console.log(ans);}  // exp is 
+} // main
+function test(){ let ans = domains(["fishing gardening swimming fishing","hunting fishing fishing biting"]); console.log(ans);}
 
 // user
 class User{

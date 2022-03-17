@@ -59,36 +59,29 @@ public class M001{
     t.test(name, ans.toString(),exp.toString());
   }
   public final List<String> lines; public final FromString fs;
-  private List<Integer> ns;
+  private List<String> all = new ArrayList<>();
 
   public M001(UserFile user){ this.lines = user.list(); this.fs = new FromString();}
   
-  private void m001() { this.ns = fs.toNums(lines.get(0));}
-  public void test_m(){ m001(); System.out.println(this.ns);} // exp is 
+  private void m001() {
+    String[] fst = this.lines.get(0).split(" "), snd = this.lines.get(1).split(" ");
+    this.all.addAll(asList(fst)); this.all.addAll(asList(snd));
+  }
+  // public void test(){ m001(); System.out.println(this.all);} // exp is 
 
-  private int domain(List<Integer> ns) {
-    int ans = 0; List<Integer> dp = new ArrayList<>();
-    for(int i= 0; i<ns.size() - 1; i++){
-      dp.add(ns.get(i));
-      if( i > 0){ dp.set(i, Math.max(dp.get(i), dp.get(i-1)));}
-      if( i > 1){ dp.set(i, Math.max(dp.get(i), dp.get(i-2)+ ns.get(i)));}
-      ans = Math.max(dp.get(i), ans);
-    }
-    for(int i= 0; i<ns.size() - 1; i++){
-      dp.set(i, ns.get(i+1));
-      if( i > 0){ dp.set(i, Math.max(dp.get(i), dp.get(i-1)));}
-      if( i > 1){ dp.set(i, Math.max(dp.get(i), dp.get(i-2)+ ns.get(i+1)));}
-      ans = Math.max(dp.get(i), ans);
-    }
-    return ans;
+  private Map<String,Integer> domain(List<String> ss) {
+    Map<String,Integer> res = new HashMap<>();
+    for(String s: ss){ res.put(s,res.get(s) == null ? 1 : res.get(s) + 1);}
+    return res;
   }
   public void test_d(){
-    List<Integer> arg = asList(10,3,2,5,7,8);
-    int res = domain(arg); System.out.println(res);
+    List<String> arg = asList("fishing","gardening","swimming","fishing","hunting","fishing","fishing","biting");
+    Map<String,Integer> res = domain(arg); System.out.println(res);
   }  // exp is exp
 
   public List<String> domains(){
-    m001(); int res = domain(this.ns);
+    m001(); Map<String,Integer> map = domain(this.all);
+    int res = max(map.values());
     return asList(String.valueOf(res));
   }// main
   public void test(){ List<String> res = domains(); System.out.println(res);}

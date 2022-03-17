@@ -66,12 +66,12 @@ void toSLL_ILLT(){ Nss arg = {{1,2},{3,4}}; Sss act = toSLL_ILL(arg);
 /** 数値配列の操作系 **/
 
 // 数値配列の最大値を返す
-int maxs(int *ms,int l){int m = 0;       for(int i=0;i<l; i++){m = m > ms[i] ? m : ms[i];} return m;}
-void maxsT(){int nums[3] = {2,3,4}; ez_t("maxs",to_string(maxs(nums,3)),to_string(4));}
+int maxsA(int *ms,int l){int m = 0;       for(int i=0;i<l; i++){m = m > ms[i] ? m : ms[i];} return m;}
+void maxsAT(){int nums[3] = {2,3,4}; ez_t("maxs",to_string(maxsA(nums,3)),to_string(4));}
 
 // 数値配列の最小値を返す
-int mins(int *ms,int l){int m = INT_MAX; for(int i=0;i<l; i++){m = m < ms[i] ? m : ms[i];} return m;}
-void minsT(){ int nums[3] = {2,3,4}; ez_t("mins",to_string(mins(nums,3)),to_string(2));}
+int minsA(int *ms,int l){int m = INT_MAX; for(int i=0;i<l; i++){m = m < ms[i] ? m : ms[i];} return m;}
+void minsAT(){ int nums[3] = {2,3,4}; ez_t("mins",to_string(minsA(nums,3)),to_string(2));}
 
 /** 数値リストの操作系 **/
 
@@ -80,14 +80,12 @@ int sums(Ns ns){ int s = 0; for(auto n : ns){ s += n;} return s;}
 void sumsT(){Ns ns = {1,2,3}; ez_t("sumL", sI(sums(ns)), "6");}
 
 //数値リストから最小値を返す
-int minL(Ns ns){ int min = INT_MAX; for(auto n : ns){min = min < n ? min : n;} return min;}
 int mins(Ns ns){ int min = INT_MAX; for(auto n : ns){min = min < n ? min : n;} return min;}
-void minLT(){Ns ns = {1,2,3}; ez_t("minL", sI(minL(ns)), "1");}
+void minsT(){Ns ns = {1,2,3}; ez_t("minL", sI(mins(ns)), "1");}
 
 //数値リストから最大値を返す
-int maxL(Ns ns){ int max = 0; for(auto n : ns){max = max < n ? n : max;} return max;}
 int maxs(Ns ns){ int max = 0; for(auto n : ns){max = max < n ? n : max;} return max;}
-void maxLT(){Ns ns = {1,2,3}; ez_t("maxL", sI(maxL(ns)), "3");}
+void maxsT(){Ns ns = {1,2,3}; ez_t("maxL", sI(maxs(ns)), "3");}
 
 //１始まりの数値リストをゼロ始まりに変換するためにリストのすべての要素から１を引く
 Ns neg1(Ns ns){ Ns res; for(int n: ns){ res.push_back(n-1);} return res;}
@@ -118,11 +116,11 @@ void f_w_test() {
   toCLL_SLandtoSL_CLLT();   //交互に入れ替える事でテスト完了！！
   toSL_ILT();               //数値のリストを文字列リストへ変換
   toSLL_ILLT();             //入れ子の数値リストを入れ子の文字列リストに変換
-  maxsT();                  // 数値配列の最大値を返す
-  minsT();                  // 数値配列の最小値を返す
+  maxsAT();                  // 数値配列の最大値を返す
+  minsAT();                  // 数値配列の最小値を返す
   sumsT();                  //数値リストの合計を返す
-  minLT();                  //数値リストから最小値を返す
-  maxLT();                  //数値リストから最大値を返す
+  minsT();                  //数値リストから最小値を返す
+  maxsT();                  //数値リストから最大値を返す
   toCLL_CAAT();             //入れ子の文字配列を入れ子の文字リストへ変換
   transposeT();             //入れ子の文字リストをトランスポーズ（転置）
 }

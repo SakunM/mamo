@@ -31,7 +31,7 @@
       "type": "shell"
     },
     {
-      "command": "cd a:/pj/mamo/langs/rust/pjs/books/minigrep && cargo test",
+      "command": "cargo test",
       "label": "cargo test",
       "type": "shell"
     }

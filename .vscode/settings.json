@@ -25,7 +25,7 @@
     "ocaml" : "cd $dir && ocaml -I a:/PJ/mamo/langs/OCaml/utils/ str.cma $fileName",
     "groovy" : "cd $dir && groovy -cp a:/PJ/mamo/langs/groovy/classes/ $fileName",
     "ruby"   : "cd $dir && ruby $fileName",
-    "c"      : "cd $dir && gcc -fexec-charset=cp932 $fileName -o a.exe && ./a.exe && del a.exe",
+    "c"      : "cd $dir && gcc -Wall -Wextra -fexec-charset=cp932 $fileName -o a.exe && ./a.exe && del a.exe",
     "cpp"    : "cd $dir && g++ -fexec-charset=cp932 $fileName -o a.exe && ./a.exe && del a.exe",
     "java"   : "cd $dir && javac -Xlint:unchecked -d a:/PJ/mamo/langs/java/classes -encoding UTF-8 $fileName && java -cp a:/PJ/mamo/langs/java/classes $fileNameWithoutExt",
     "rust" : "cd $dir && cd .. && cargo run"

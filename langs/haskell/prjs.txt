@@ -1,0 +1,13 @@
+マップと構造でひと廻り				2022年3月14日
+Haskellでのマップ構造の実現は他の言語と少し違う、getメソッドなどは存在しない。Map.lookupから返る値はMaybe値だ。
+domain :: (Eq v, Num v, Ord k) => [k] -> Map.Map k v
+domain ss = foldl folder Map.empty ss where	関数型言語ではマップの変更も許さない。なので変化する構造は畳み込みで行う。
+  folder res s = Map.insert s val res where mb = Map.lookup s res; val = if mb == Nothing then 1 else (maybe 0 id mb) + 1
+畳み込み関数folderの実装を左から見ていくとwhere句の左辺では未知の変数valをMap.insertでresに挿入している。
+そしてwhere句の右辺でvalを解決している。まずsをlookupしてみる・・そしてmbを調べるけど、最初にNothingを調べているのに
+else句でプレリュードのmaybe関数でディフォルト値を提示して値を取り出すのはかなり冗長に思える。
+ここはケース構文の使い処だ！！	...where mb = Map.lookup s res; val = case of just(x) -> x + 1; Nothing -> 1
+実にシンプル！！関数型の金字塔「どうするかではなくどうあるべきか」を記述するが少しわかる気がする。
+
+res = maximum(Map.elems kv)Mapモジュールのelems関数は他の言語のvaluesメソッドと機能は同じだ。
+ちなみにキーのリストを取り出すには、keys 関数を使う。
